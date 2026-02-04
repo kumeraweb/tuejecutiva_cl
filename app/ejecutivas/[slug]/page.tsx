@@ -69,7 +69,7 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
 
   const coverageRegions = (exec.executive_regions ?? [])
     .map((item: ExecutiveRegionJoin) => item.regions)
-    .filter(Boolean);
+    .filter(Boolean) as Array<NonNullable<ExecutiveRegionJoin["regions"]>>;
 
   const coverageLabel = exec.coverage_all
     ? "Cobertura: Todo Chile"
