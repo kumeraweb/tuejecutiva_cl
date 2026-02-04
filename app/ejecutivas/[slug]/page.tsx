@@ -52,6 +52,7 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
     phone: string | null;
     whatsapp_message: string | null;
     photo_url: string | null;
+    company_logo_url: string | null;
     name: string;
     description: string | null;
     specialty: string | null;
@@ -130,7 +131,7 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
                   className="ml-4 text-sm font-medium text-slate-700"
                   aria-current="page"
                 >
-                  {executive.name}
+                  {exec.name}
                 </span>
               </div>
             </li>
@@ -143,13 +144,13 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
               <img
                 className="mx-auto h-32 w-32 rounded-full ring-4 ring-emerald-50"
                 src={safePhotoUrl}
-                alt={executive.name}
+                alt={exec.name}
               />
               <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900">
-                {executive.name}
+                {exec.name}
               </h1>
               <p className="text-sm font-medium text-emerald-600 bg-emerald-50 rounded-full py-1 px-3 inline-flex items-center gap-1 mt-2">
-                {executive.verified ? (
+                {exec.verified ? (
                   <>
                     <BadgeCheck className="w-4 h-4" /> Ejecutiva Verificada
                   </>
@@ -167,9 +168,9 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
                   Representante de
                 </p>
                 <div className="flex items-center justify-center gap-2">
-                  {executive.company_logo_url ? (
+                  {exec.company_logo_url ? (
                     <img
-                      src={executive.company_logo_url}
+                      src={exec.company_logo_url}
                       alt={safeCompany}
                       className="h-8 max-w-[120px] object-contain"
                     />
