@@ -11,15 +11,15 @@ export interface Executive {
   id: string;
   name: string;
   slug: string;
-  phone: string;
-  company: string;
+  phone: string | null;
+  company: string | null;
   experience_years: number | null;
   specialty: string | null;
   description: string | null;
   whatsapp_message: string | null;
   photo_url: string | null;
   coverage_all: boolean;
-  plan: "bronce" | "plata" | "oro";
+  plan: "bronce" | "plata" | "oro" | null;
   verified: boolean | null;
   executive_regions?: ExecutiveRegionJoin[] | null;
 }

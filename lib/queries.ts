@@ -30,7 +30,7 @@ export interface ExecutiveRecord {
   company_logo_url: string | null;
   faq: unknown;
   coverage_all: boolean;
-  plan: string | null;
+  plan: "bronce" | "plata" | "oro" | null;
   verified: boolean;
   verified_date: string | null;
   executive_categories?: ExecutiveCategoryJoin[];
@@ -133,7 +133,7 @@ export async function getExecutives(): Promise<ExecutiveRecord[]> {
     throw new Error(`getExecutives failed: ${error.message}`);
   }
 
-  return (data ?? []) as ExecutiveRecord[];
+  return (data ?? []) as unknown as ExecutiveRecord[];
 }
 
 /**

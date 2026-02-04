@@ -19,7 +19,7 @@ function hasValidSecret(request: NextRequest, adminSecret: string) {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
       });
       return { authorized: true, response };
     }
