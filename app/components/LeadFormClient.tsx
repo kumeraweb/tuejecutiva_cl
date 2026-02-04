@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface CategoryOption {
   id: string;
@@ -12,6 +13,7 @@ interface LeadFormClientProps {
 }
 
 export default function LeadFormClient({ categories }: LeadFormClientProps) {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +23,8 @@ export default function LeadFormClient({ categories }: LeadFormClientProps) {
     setIsSubmitting(true);
     setError(null);
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const data = Object.fromEntries(formData);
     const mensaje = [
       `Nombre: ${data.name ?? ""}`,
@@ -48,6 +51,10 @@ export default function LeadFormClient({ categories }: LeadFormClientProps) {
       }
 
       setIsSubmitted(true);
+      form.reset();
+      setTimeout(() => {
+        router.push("/");
+      }, 4000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado.");
     } finally {

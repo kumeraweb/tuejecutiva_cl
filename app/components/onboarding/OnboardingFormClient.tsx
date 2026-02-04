@@ -94,6 +94,99 @@ export default function OnboardingFormClient({
     setFormState((prev) => ({ ...prev, [name]: value }));
   }
 
+  function normalizePhone(raw: string) {
+    const trimmed = raw.trim();
+    const cleaned = trimmed.replace(/[\s().-]/g, "");
+    return cleaned;
+  }
+
+  function isValidEmail(value: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  function isValidPhone(value: string) {
+    return /^\+?[0-9]{8,15}$/.test(value);
+  }
+
+  function validateAll() {
+    const nextErrors: Record<string, string> = {};
+
+    if (!formState.full_name.trim()) nextErrors.full_name = "Este campo es obligatorio.";
+    if (!formState.email.trim()) {
+      nextErrors.email = "Este campo es obligatorio.";
+    } else if (!isValidEmail(formState.email.trim())) {
+      nextErrors.email = "Email inválido.";
+    }
+
+    const normalizedPhone = normalizePhone(formState.phone);
+    if (!normalizedPhone) {
+      nextErrors.phone = "Este campo es obligatorio.";
+    } else if (!isValidPhone(normalizedPhone)) {
+      nextErrors.phone = "Teléfono inválido. Usa formato +569XXXXXXXX.";
+    }
+
+    if (!formState.company.trim()) nextErrors.company = "Este campo es obligatorio.";
+
+    if (!formState.experience_years.trim()) {
+      nextErrors.experience_years = "Este campo es obligatorio.";
+    } else if (!Number.isFinite(Number(formState.experience_years))) {
+      nextErrors.experience_years = "Ingresa un número válido.";
+    } else if (Number(formState.experience_years) < 0 || Number(formState.experience_years) > 60) {
+      nextErrors.experience_years = "Ingresa un número válido.";
+    }
+
+    if (!formState.specialty.trim()) nextErrors.specialty = "Este campo es obligatorio.";
+    if (!formState.description.trim()) nextErrors.description = "Este campo es obligatorio.";
+
+    if (selectedCategories.length === 0 && !customCategory.trim()) {
+      nextErrors.category = "Selecciona una categoría o escribe una libre.";
+    }
+    if (!coverageAll && selectedRegions.length === 0) {
+      nextErrors.regions = "Selecciona al menos una región.";
+    }
+
+    if (supportingFiles.length === 0) {
+      nextErrors.supporting_files = "Debes adjuntar al menos un archivo.";
+    } else {
+      for (const file of supportingFiles) {
+        if (!allowedMimeTypes.includes(file.type)) {
+          nextErrors.supporting_files = "Formato de archivo no permitido.";
+          break;
+        }
+      }
+    }
+
+    if (photoFile && !allowedPhotoTypes.includes(photoFile.type)) {
+      nextErrors.photo_file = "Formato de foto no permitido.";
+    }
+
+    if (!formState.accepted_terms) {
+      nextErrors.accepted_terms = "Debes aceptar términos y condiciones.";
+    }
+    if (!formState.accepted_data_use) {
+      nextErrors.accepted_data_use = "Debes aceptar el uso de tus datos.";
+    }
+
+    setFieldErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) {
+      setError("Revisa los campos marcados.");
+      return null;
+    }
+
+    setError(null);
+    return {
+      normalizedPhone,
+      normalizedEmail: formState.email.trim(),
+      normalizedName: formState.full_name.trim(),
+      normalizedCompany: formState.company.trim(),
+      normalizedSpecialty: formState.specialty.trim(),
+      normalizedDescription: formState.description.trim(),
+      normalizedWhatsapp: formState.whatsapp_message.trim(),
+      normalizedExperience: formState.experience_years.trim(),
+      normalizedCategory: customCategory.trim(),
+    };
+  }
+
   function validateStep(currentStep: number) {
     const nextErrors: Record<string, string> = {};
 
@@ -174,19 +267,20 @@ export default function OnboardingFormClient({
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!validateStep(7)) return;
+    const normalized = validateAll();
+    if (!normalized) return;
 
     const formData = new FormData();
-    formData.set("full_name", formState.full_name.trim());
-    formData.set("email", formState.email.trim());
-    formData.set("phone", formState.phone.trim());
-    formData.set("company", formState.company.trim());
-    formData.set("experience_years", formState.experience_years.trim());
-    formData.set("specialty", formState.specialty.trim());
-    formData.set("description", formState.description.trim());
-    formData.set("whatsapp_message", formState.whatsapp_message.trim());
+    formData.set("full_name", normalized.normalizedName);
+    formData.set("email", normalized.normalizedEmail);
+    formData.set("phone", normalized.normalizedPhone);
+    formData.set("company", normalized.normalizedCompany);
+    formData.set("experience_years", normalized.normalizedExperience);
+    formData.set("specialty", normalized.normalizedSpecialty);
+    formData.set("description", normalized.normalizedDescription);
+    formData.set("whatsapp_message", normalized.normalizedWhatsapp);
     formData.set("coverage_all", String(coverageAll));
-    formData.set("custom_category", customCategory.trim());
+    formData.set("custom_category", normalized.normalizedCategory);
     formData.set("accepted_terms", formState.accepted_terms ? "on" : "");
     formData.set("accepted_data_use", formState.accepted_data_use ? "on" : "");
     formData.set("mode", mode);
@@ -296,6 +390,7 @@ export default function OnboardingFormClient({
               <label className="block text-sm font-medium text-slate-700 mb-1">
                 Email <span className="text-rose-500">*</span>
               </label>
+              <p className="mb-1 text-xs text-slate-400">No será público, solo para notificaciones.</p>
               <input
                 name="email"
                 type="email"
@@ -304,7 +399,6 @@ export default function OnboardingFormClient({
                 placeholder="Ej. maria@empresa.cl"
                 className="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
               />
-              <p className="mt-1 text-xs text-slate-400">No será público, solo para notificaciones.</p>
               {fieldErrors.email && <p className="mt-1 text-xs text-rose-600 font-medium">{fieldErrors.email}</p>}
             </div>
 
@@ -384,6 +478,7 @@ export default function OnboardingFormClient({
               <label className="block text-sm font-medium text-slate-700 mb-1">
                 Descripción de tu Perfil <span className="text-rose-500">*</span>
               </label>
+              <p className="mb-1 text-xs text-slate-500">Esta descripción aparecerá en tu ficha pública. Sé clara y profesional.</p>
               <textarea
                 name="description"
                 rows={4}
@@ -392,7 +487,6 @@ export default function OnboardingFormClient({
                 placeholder="Ej. Me especializo en asesorar a familias jóvenes para encontrar el mejor plan de salud. Cuento con 5 años de experiencia..."
                 className="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
               />
-              <p className="mt-1 text-xs text-slate-500">Esta descripción aparecerá en tu ficha pública. Sé clara y profesional.</p>
               {fieldErrors.description && <p className="mt-1 text-xs text-rose-600 font-medium">{fieldErrors.description}</p>}
             </div>
           </div>
@@ -404,6 +498,9 @@ export default function OnboardingFormClient({
               <label className="block text-sm font-medium text-slate-700 mb-1">
                 Mensaje de Bienvenida WhatsApp (Opcional)
               </label>
+              <p className="mb-1 text-xs text-slate-500">
+                Este mensaje aparecerá pre-escrito cuando un cliente haga clic en "Contactar por WhatsApp".
+              </p>
               <textarea
                 name="whatsapp_message"
                 rows={3}
@@ -412,9 +509,6 @@ export default function OnboardingFormClient({
                 placeholder="Ej. ¡Hola! Vi tu perfil en TuEjecutiva.cl y me gustaría cotizar un plan..."
                 className="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
               />
-              <p className="mt-1 text-xs text-slate-500">
-                Este mensaje aparecerá pre-escrito cuando un cliente haga clic en "Contactar por WhatsApp".
-              </p>
             </div>
 
             <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 flex flex-col items-center justify-center text-center">
@@ -435,6 +529,9 @@ export default function OnboardingFormClient({
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Fotografía de perfil (Opcional)
               </label>
+              <p className="text-xs text-slate-500 mb-3">
+                La foto es opcional. Si no subes una, se mostrarán tus iniciales con un placeholder.
+              </p>
 
               <div className="flex items-center justify-center w-full">
                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all">
@@ -485,9 +582,6 @@ export default function OnboardingFormClient({
                 />
               </div>
             </div>
-            <p className="text-xs text-slate-500">
-              La foto es opcional. Si no subes una, se mostrarán tus iniciales con un placeholder.
-            </p>
           </div>
         ) : null}
 
@@ -528,6 +622,9 @@ export default function OnboardingFormClient({
             </div>
 
             <div className="pt-4 border-t border-slate-100">
+              <p className="text-slate-500 text-xs mb-3">
+                Desmarca esta casilla si solo atiendes regiones específicas.
+              </p>
               <div className="flex items-start gap-3 mb-4">
                 <div className="flex h-6 items-center">
                   <input
@@ -545,7 +642,6 @@ export default function OnboardingFormClient({
                   <label htmlFor="coverage_all" className="font-semibold text-slate-900">
                     Tengo cobertura en todo Chile
                   </label>
-                  <p className="text-slate-500 text-xs">Desmarca esta casilla si solo atiendes regiones específicas.</p>
                 </div>
               </div>
 
@@ -581,7 +677,7 @@ export default function OnboardingFormClient({
                 📄 Documentación Requerida
               </h2>
               <p className="mt-1 text-xs text-blue-700 leading-relaxed">
-                Para validar tu perfil y otorgarte el sello de verificación, necesitamos <strong>una prueba</strong> de que trabajas con la empresa que indicaste (ej. foto de credencial, contrato, o captura de correo corporativo). Este archivo es <strong>privado</strong>.
+                Debes validar tu relación laboral con la empresa que indicaste. Ejemplos: contrato de trabajo o certificado de cotizaciones. Es <strong>obligatorio</strong> y esta información es <strong>privada</strong>; no se comparte con nadie.
               </p>
             </div>
 
@@ -662,7 +758,12 @@ export default function OnboardingFormClient({
                     name="accepted_terms"
                     type="checkbox"
                     checked={formState.accepted_terms}
-                    onChange={(event) => updateField("accepted_terms", event.target.checked)}
+                    onChange={(event) => {
+                      updateField("accepted_terms", event.target.checked);
+                      if (event.target.checked) {
+                        setFieldErrors((prev) => ({ ...prev, accepted_terms: "" }));
+                      }
+                    }}
                     className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600"
                   />
                 </div>
@@ -681,7 +782,12 @@ export default function OnboardingFormClient({
                     name="accepted_data_use"
                     type="checkbox"
                     checked={formState.accepted_data_use}
-                    onChange={(event) => updateField("accepted_data_use", event.target.checked)}
+                    onChange={(event) => {
+                      updateField("accepted_data_use", event.target.checked);
+                      if (event.target.checked) {
+                        setFieldErrors((prev) => ({ ...prev, accepted_data_use: "" }));
+                      }
+                    }}
                     className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600"
                   />
                 </div>

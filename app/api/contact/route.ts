@@ -43,7 +43,9 @@ export async function POST(request: Request) {
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #0f172a; background-color: #f8fafc; padding: 24px;">
           <div style="max-width: 560px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
-            <img src="https://tuejecutiva.cl/logo/logonbg.png" alt="TuEjecutiva.cl" style="height: 36px; margin-bottom: 16px;" />
+            <div style="display: inline-block; padding: 10px 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 16px;">
+              <img src="https://tuejecutiva.cl/logo/logonbg.png" alt="TuEjecutiva.cl" style="height: 36px; display: block;" />
+            </div>
             <h2 style="margin: 0 0 12px; font-size: 20px;">Gracias por postular a TuEjecutiva.cl</h2>
             <p>Hola ${nombre},</p>
             <p>Recibimos tu postulación correctamente. Nuestro equipo la revisará y te contactará si necesitamos más información.</p>
