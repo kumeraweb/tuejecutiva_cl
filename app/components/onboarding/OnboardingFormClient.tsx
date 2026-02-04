@@ -94,18 +94,16 @@ export default function OnboardingFormClient({
     setFormState((prev) => ({ ...prev, [name]: value }));
   }
 
-  function normalizePhone(raw: string) {
-    const trimmed = raw.trim();
-    const cleaned = trimmed.replace(/[\s().-]/g, "");
-    return cleaned;
+  function normalizePhoneDigits(raw: string) {
+    return raw.replace(/\D/g, "");
   }
 
   function isValidEmail(value: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
-  function isValidPhone(value: string) {
-    return /^\+?[0-9]{8,15}$/.test(value);
+  function isValidPhoneDigits(value: string) {
+    return /^[0-9]{9}$/.test(value);
   }
 
   function validateAll() {
@@ -118,11 +116,11 @@ export default function OnboardingFormClient({
       nextErrors.email = "Email inválido.";
     }
 
-    const normalizedPhone = normalizePhone(formState.phone);
-    if (!normalizedPhone) {
+    const normalizedDigits = normalizePhoneDigits(formState.phone);
+    if (!normalizedDigits) {
       nextErrors.phone = "Este campo es obligatorio.";
-    } else if (!isValidPhone(normalizedPhone)) {
-      nextErrors.phone = "Teléfono inválido. Usa formato +569XXXXXXXX.";
+    } else if (!isValidPhoneDigits(normalizedDigits)) {
+      nextErrors.phone = "Teléfono inválido. Debe tener 9 dígitos.";
     }
 
     if (!formState.company.trim()) nextErrors.company = "Este campo es obligatorio.";
@@ -175,7 +173,7 @@ export default function OnboardingFormClient({
 
     setError(null);
     return {
-      normalizedPhone,
+      normalizedPhone: `+56${normalizedDigits}`,
       normalizedEmail: formState.email.trim(),
       normalizedName: formState.full_name.trim(),
       normalizedCompany: formState.company.trim(),
@@ -406,17 +404,21 @@ export default function OnboardingFormClient({
               <label className="block text-sm font-medium text-slate-700 mb-1">
                 Teléfono móvil <span className="text-rose-500">*</span>
               </label>
+              <p className="mb-1 text-xs text-slate-500">
+                Ingresa tu número sin el +56. Ejemplo: 912345678.
+              </p>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <span className="text-slate-400 sm:text-sm">📱</span>
+                  <span className="text-slate-500 sm:text-sm">+56</span>
                 </div>
                 <input
                   name="phone"
                   type="tel"
+                  inputMode="numeric"
                   value={formState.phone}
-                  onChange={(event) => updateField("phone", event.target.value)}
-                  placeholder="+56 9 1234 5678"
-                  className="block w-full rounded-lg border-0 py-2.5 pl-10 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
+                  onChange={(event) => updateField("phone", normalizePhoneDigits(event.target.value))}
+                  placeholder="9 1234 5678"
+                  className="block w-full rounded-lg border-0 py-2.5 pl-12 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
                 />
               </div>
               {fieldErrors.phone && <p className="mt-1 text-xs text-rose-600 font-medium">{fieldErrors.phone}</p>}
