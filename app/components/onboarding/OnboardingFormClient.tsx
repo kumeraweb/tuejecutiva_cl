@@ -26,6 +26,7 @@ const allowedMimeTypes = ["application/pdf", "image/jpeg", "image/png"];
 const allowedPhotoTypes = ["image/jpeg", "image/png", "image/webp"];
 
 const steps = [
+  "Inicio",
   "Datos personales",
   "Vínculo empresa",
   "Mensaje de WhatsApp",
@@ -42,7 +43,7 @@ export default function OnboardingFormClient({
   mode,
 }: OnboardingFormClientProps) {
   const router = useRouter();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [coverageAll, setCoverageAll] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
@@ -188,6 +189,10 @@ export default function OnboardingFormClient({
   function validateStep(currentStep: number) {
     const nextErrors: Record<string, string> = {};
 
+    if (currentStep === 0) {
+      return true;
+    }
+
     if (currentStep === 1) {
       if (!formState.full_name.trim()) nextErrors.full_name = "Este campo es obligatorio.";
       if (!formState.email.trim()) nextErrors.email = "Este campo es obligatorio.";
@@ -253,7 +258,7 @@ export default function OnboardingFormClient({
 
   function handleNext() {
     if (validateStep(step)) {
-      setStep((prev) => Math.min(prev + 1, steps.length));
+      setStep((prev) => Math.min(prev + 1, steps.length - 1));
     }
   }
 
@@ -343,14 +348,14 @@ export default function OnboardingFormClient({
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">Postulación de Ejecutiva</h1>
         <p className="mt-2 text-sm text-slate-500">
-          Paso {step} de {steps.length}: <span className="font-semibold text-emerald-600">{steps[step - 1]}</span>
+          Paso {step} de {steps.length - 1}: <span className="font-semibold text-emerald-600">{steps[step]}</span>
         </p>
 
         {/* Improved Progress Bar */}
         <div className="mt-4 h-2 w-full rounded-full bg-slate-100 overflow-hidden">
           <div
             className="h-full bg-emerald-500 transition-all duration-500 ease-out rounded-full"
-            style={{ width: `${(step / steps.length) * 100}%` }}
+            style={{ width: `${(step / (steps.length - 1)) * 100}%` }}
           />
         </div>
       </div>
@@ -362,6 +367,25 @@ export default function OnboardingFormClient({
       ) : null}
 
       <form className="mt-6 space-y-8" onSubmit={handleSubmit}>
+        {step === 0 ? (
+          <div className="space-y-6">
+            <div className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-6">
+              <h2 className="text-lg font-semibold text-emerald-900">Antes de comenzar</h2>
+              <p className="mt-2 text-sm text-emerald-900/80">
+                Te recomendamos leer cada paso con atención. La mayor parte de la información
+                que ingreses se mostrará en tu perfil público, excepto la documentación privada.
+              </p>
+              <p className="mt-3 text-sm text-emerald-900/80">
+                Durante el proceso se te pedirá adjuntar un archivo que acredite tu vínculo
+                laboral con la empresa que indiques (por ejemplo, contrato de trabajo o certificado
+                de cotizaciones). Este archivo es obligatorio y no se comparte con nadie.
+              </p>
+              <p className="mt-3 text-sm text-emerald-900/80">
+                Te recomendamos tener ese documento a mano antes de continuar.
+              </p>
+            </div>
+          </div>
+        ) : null}
         {step === 1 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="sm:col-span-2">
@@ -617,7 +641,7 @@ export default function OnboardingFormClient({
                   value={customCategory}
                   onChange={(event) => setCustomCategory(event.target.value)}
                   placeholder="Ej. Seguros de mascotas"
-                  className="block w-full rounded-lg border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 text-sm transition-all"
+                  className="block w-full rounded-lg border-0 py-2 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 text-sm transition-all"
                 />
               </div>
               {fieldErrors.category && <p className="mt-2 text-xs text-rose-600 font-medium">{fieldErrors.category}</p>}
@@ -808,19 +832,19 @@ export default function OnboardingFormClient({
           <button
             type="button"
             onClick={handleBack}
-            disabled={step === 1}
+            disabled={step === 0}
             className="w-full sm:w-auto rounded-lg px-6 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors"
           >
             ← Volver
           </button>
 
-          {step < steps.length ? (
+          {step < steps.length - 1 ? (
             <button
               type="button"
               onClick={handleNext}
               className="w-full sm:w-auto rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all"
             >
-              Continuar
+              {step === 0 ? "Comenzar" : "Continuar"}
             </button>
           ) : (
             <button
