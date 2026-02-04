@@ -41,7 +41,7 @@ export default function PostularPage() {
                 </div>
               </li>
               <li className="flex items-start">
-                <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-indigo-600 text-white">
+                <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
                   <UserCheck className="w-6 h-6" />
                 </div>
                 <div className="ml-4">
@@ -53,7 +53,7 @@ export default function PostularPage() {
                 </div>
               </li>
               <li className="flex items-start">
-                <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-amber-500 text-white">
+                <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-slate-100 text-slate-700">
                   <Star className="w-6 h-6" fill="currentColor" />
                 </div>
                 <div className="ml-4">

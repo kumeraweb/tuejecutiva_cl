@@ -78,7 +78,7 @@ export default function VerificacionPage() {
           </div>
 
           <div className="mt-12 lg:mt-0 relative">
-            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100 to-indigo-50 rounded-3xl transform rotate-3 scale-95 opacity-70" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100 to-slate-100 rounded-3xl transform rotate-3 scale-95 opacity-70" />
             <div className="relative bg-white p-8 rounded-3xl shadow-xl ring-1 ring-gray-900/5">
               <div className="text-center py-12">
                 <div className="mx-auto h-32 w-32 flex items-center justify-center mb-6">

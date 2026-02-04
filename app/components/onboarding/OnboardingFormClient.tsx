@@ -225,66 +225,60 @@ export default function OnboardingFormClient({
   const summaryCategories =
     selectedCategories.length > 0
       ? categoryOptions
-          .filter((category) => selectedCategories.includes(category.id))
-          .map((category) => category.name)
+        .filter((category) => selectedCategories.includes(category.id))
+        .map((category) => category.name)
       : [];
 
   const summaryRegions =
     coverageAll || selectedRegions.length === 0
       ? ["Cobertura nacional"]
       : regionOptions
-          .filter((region) => selectedRegions.includes(region.id))
-          .map((region) => region.name);
+        .filter((region) => selectedRegions.includes(region.id))
+        .map((region) => region.name);
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+    <div className="bg-white rounded-2xl shadow-xl ring-1 ring-slate-900/5 p-8 sm:p-10 relative overflow-hidden transition-all duration-300">
+      {/* Decorative top line */}
+      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-emerald-400" />
+
       {mode === "dev" ? (
         <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          Modo desarrollo
+          <strong>Modo desarrollo:</strong> Estás viendo esto porque el entorno es de pruebas o la URL incluye /dev.
         </div>
       ) : null}
 
-      <h1 className="text-2xl font-bold text-slate-900">Postulación de ejecutiva</h1>
-      <p className="mt-2 text-sm text-slate-600">
-        Completa tus datos para iniciar el proceso de verificación.
-      </p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-slate-900">Postulación de Ejecutiva</h1>
+        <p className="mt-2 text-sm text-slate-500">
+          Paso {step} de {steps.length}: <span className="font-semibold text-emerald-600">{steps[step - 1]}</span>
+        </p>
 
-      <div className="mt-6">
-        <div className="flex flex-wrap gap-2 text-xs font-medium text-slate-500">
-          {steps.map((label, index) => {
-            const current = index + 1;
-            const isActive = current === step;
-            const isDone = current < step;
-            return (
-              <div
-                key={label}
-                className={`rounded-full px-3 py-1 ring-1 ring-inset ${
-                  isActive
-                    ? "bg-emerald-600 text-white ring-emerald-600"
-                    : isDone
-                      ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
-                      : "bg-slate-100 text-slate-500 ring-slate-200"
-                }`}
-              >
-                {current}. {label}
-              </div>
-            );
-          })}
+        {/* Improved Progress Bar */}
+        <div className="mt-4 h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+          <div
+            className="h-full bg-emerald-500 transition-all duration-500 ease-out rounded-full"
+            style={{ width: `${(step / steps.length) * 100}%` }}
+          />
         </div>
       </div>
 
       {error ? (
-        <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-          {error}
+        <div className="mb-6 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 flex items-center gap-2">
+          <span className="text-xl">⚠️</span> {error}
         </div>
       ) : null}
 
-      <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
+      <form className="mt-6 space-y-8" onSubmit={handleSubmit}>
         {step === 1 ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <h3 className="text-base font-semibold text-slate-900 mb-1">Datos de Contacto</h3>
+              <p className="text-xs text-slate-500 mb-4">Esta información (excepto tu email) será visible en tu perfil público.</p>
+            </div>
+
             <div>
-              <label className="block text-sm font-semibold text-slate-900">
-                Nombre completo (Obligatorio)
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Nombre completo <span className="text-rose-500">*</span>
               </label>
               <input
                 name="full_name"
@@ -292,15 +286,14 @@ export default function OnboardingFormClient({
                 value={formState.full_name}
                 onChange={(event) => updateField("full_name", event.target.value)}
                 placeholder="Ej. María Pérez"
-                className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
               />
-              {fieldErrors.full_name ? (
-                <p className="mt-1 text-xs text-rose-600">{fieldErrors.full_name}</p>
-              ) : null}
+              {fieldErrors.full_name && <p className="mt-1 text-xs text-rose-600 font-medium">{fieldErrors.full_name}</p>}
             </div>
+
             <div>
-              <label className="block text-sm font-semibold text-slate-900">
-                Email (Obligatorio)
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Email <span className="text-rose-500">*</span>
               </label>
               <input
                 name="email"
@@ -308,37 +301,40 @@ export default function OnboardingFormClient({
                 value={formState.email}
                 onChange={(event) => updateField("email", event.target.value)}
                 placeholder="Ej. maria@empresa.cl"
-                className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
               />
-              {fieldErrors.email ? (
-                <p className="mt-1 text-xs text-rose-600">{fieldErrors.email}</p>
-              ) : null}
+              <p className="mt-1 text-xs text-slate-400">No será público, solo para notificaciones.</p>
+              {fieldErrors.email && <p className="mt-1 text-xs text-rose-600 font-medium">{fieldErrors.email}</p>}
             </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-900">
-                Teléfono (Obligatorio)
+
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Teléfono móvil <span className="text-rose-500">*</span>
               </label>
-              <input
-                name="phone"
-                type="tel"
-                value={formState.phone}
-                onChange={(event) => updateField("phone", event.target.value)}
-                placeholder="Ej. +56 9 1234 5678"
-                className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-              />
-              {fieldErrors.phone ? (
-                <p className="mt-1 text-xs text-rose-600">{fieldErrors.phone}</p>
-              ) : null}
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <span className="text-slate-400 sm:text-sm">📱</span>
+                </div>
+                <input
+                  name="phone"
+                  type="tel"
+                  value={formState.phone}
+                  onChange={(event) => updateField("phone", event.target.value)}
+                  placeholder="+56 9 1234 5678"
+                  className="block w-full rounded-lg border-0 py-2.5 pl-10 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
+                />
+              </div>
+              {fieldErrors.phone && <p className="mt-1 text-xs text-rose-600 font-medium">{fieldErrors.phone}</p>}
             </div>
           </div>
         ) : null}
 
         {step === 2 ? (
-          <>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-semibold text-slate-900">
-                  Empresa (Obligatorio)
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Empresa o Institución <span className="text-rose-500">*</span>
                 </label>
                 <input
                   name="company"
@@ -346,15 +342,14 @@ export default function OnboardingFormClient({
                   value={formState.company}
                   onChange={(event) => updateField("company", event.target.value)}
                   placeholder="Ej. Seguros VidaPlus"
-                  className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  className="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
                 />
-                {fieldErrors.company ? (
-                  <p className="mt-1 text-xs text-rose-600">{fieldErrors.company}</p>
-                ) : null}
+                {fieldErrors.company && <p className="mt-1 text-xs text-rose-600 font-medium">{fieldErrors.company}</p>}
               </div>
+
               <div>
-                <label className="block text-sm font-semibold text-slate-900">
-                  Años de experiencia (Obligatorio)
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Años de experiencia <span className="text-rose-500">*</span>
                 </label>
                 <input
                   name="experience_years"
@@ -363,301 +358,366 @@ export default function OnboardingFormClient({
                   value={formState.experience_years}
                   onChange={(event) => updateField("experience_years", event.target.value)}
                   placeholder="Ej. 5"
-                  className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  className="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
                 />
-                {fieldErrors.experience_years ? (
-                  <p className="mt-1 text-xs text-rose-600">{fieldErrors.experience_years}</p>
-                ) : null}
+                {fieldErrors.experience_years && <p className="mt-1 text-xs text-rose-600 font-medium">{fieldErrors.experience_years}</p>}
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-900">
-                  Especialidad (Obligatorio)
+
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Especialidad Principal <span className="text-rose-500">*</span>
                 </label>
                 <input
                   name="specialty"
                   type="text"
                   value={formState.specialty}
                   onChange={(event) => updateField("specialty", event.target.value)}
-                  placeholder="Ej. Planes de salud"
-                  className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  placeholder="Ej. Planes de salud para familias"
+                  className="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
                 />
-                {fieldErrors.specialty ? (
-                  <p className="mt-1 text-xs text-rose-600">{fieldErrors.specialty}</p>
-                ) : null}
+                {fieldErrors.specialty && <p className="mt-1 text-xs text-rose-600 font-medium">{fieldErrors.specialty}</p>}
               </div>
             </div>
+
             <div>
-              <label className="block text-sm font-semibold text-slate-900">
-                Descripción (Obligatorio)
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Descripción de tu Perfil <span className="text-rose-500">*</span>
               </label>
               <textarea
                 name="description"
                 rows={4}
                 value={formState.description}
                 onChange={(event) => updateField("description", event.target.value)}
-                placeholder="Ej. Atiendo empresas y personas en planes complementarios..."
-                className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                placeholder="Ej. Me especializo en asesorar a familias jóvenes para encontrar el mejor plan de salud. Cuento con 5 años de experiencia..."
+                className="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
               />
-              {fieldErrors.description ? (
-                <p className="mt-1 text-xs text-rose-600">{fieldErrors.description}</p>
-              ) : null}
+              <p className="mt-1 text-xs text-slate-500">Esta descripción aparecerá en tu ficha pública. Sé clara y profesional.</p>
+              {fieldErrors.description && <p className="mt-1 text-xs text-rose-600 font-medium">{fieldErrors.description}</p>}
             </div>
-          </>
+          </div>
         ) : null}
 
         {step === 3 ? (
-          <>
+          <div className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-slate-900">
-                Mensaje de WhatsApp (Opcional)
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Mensaje de Bienvenida WhatsApp (Opcional)
               </label>
               <textarea
                 name="whatsapp_message"
                 rows={3}
                 value={formState.whatsapp_message}
                 onChange={(event) => updateField("whatsapp_message", event.target.value)}
-                placeholder="Ej. Hola, soy María y te puedo ayudar con..."
-                className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                placeholder="Ej. ¡Hola! Vi tu perfil en TuEjecutiva.cl y me gustaría cotizar un plan..."
+                className="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all"
               />
+              <p className="mt-1 text-xs text-slate-500">
+                Este mensaje aparecerá pre-escrito cuando un cliente haga clic en "Contactar por WhatsApp".
+              </p>
             </div>
-            <div className="rounded-xl border border-dashed border-gray-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
-              Placeholder imagen explicativa de WhatsApp
+
+            {/* Styled Placeholder */}
+            <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 flex flex-col items-center justify-center text-center group hover:bg-slate-50 transition-colors">
+              <span className="text-3xl mb-2 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all">📱</span>
+              <p className="text-sm font-medium text-slate-600">Vista previa del mensaje</p>
+              <p className="text-xs text-slate-400 mt-1">Aquí se mostrará cómo verá el cliente el mensaje en su celular.</p>
             </div>
-          </>
+          </div>
         ) : null}
 
         {step === 4 ? (
-          <>
+          <div className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-slate-900">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
                 Fotografía de perfil (Opcional)
               </label>
-              <input
-                name="photo_file"
-                type="file"
-                accept="image/jpeg,image/png"
-                onChange={(event) => {
-                  const file = event.target.files?.[0] || null;
-                  setPhotoFile(file);
-                }}
-                className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-              />
-              <p className="mt-2 text-xs text-slate-500">
-                Formatos permitidos: JPG o PNG. Si no subes foto se usará la letra de tu nombre.
-              </p>
-              {fieldErrors.photo_file ? (
-                <p className="mt-1 text-xs text-rose-600">{fieldErrors.photo_file}</p>
-              ) : null}
+
+              <div className="flex items-center justify-center w-full">
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg className="w-8 h-8 mb-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                    <p className="mb-2 text-sm text-slate-500"><span className="font-semibold text-emerald-600">Haz clic para subir</span> o arrastra la imagen</p>
+                    <p className="text-xs text-slate-400">JPG o PNG (MAX. 2MB)</p>
+                  </div>
+                  <input
+                    name="photo_file"
+                    type="file"
+                    accept="image/jpeg,image/png"
+                    className="hidden"
+                    onChange={(event) => {
+                      const file = event.target.files?.[0] || null;
+                      setPhotoFile(file);
+                    }}
+                  />
+                </label>
+              </div>
+
+              {photoFile && (
+                <div className="mt-2 flex items-center gap-2 p-2 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-lg">
+                  <span>✓</span> Foto seleccionada: {photoFile.name}
+                </div>
+              )}
+
+              {fieldErrors.photo_file && <p className="mt-1 text-xs text-rose-600 font-medium">{fieldErrors.photo_file}</p>}
             </div>
+
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="rounded-xl border border-dashed border-gray-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                Placeholder card con foto
+              {/* Placeholders styles */}
+              <div className="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm h-48 flex flex-col items-center justify-center">
+                <div className="w-16 h-16 bg-slate-100 rounded-full mb-3 flex items-center justify-center text-2xl">👤</div>
+                <p className="text-sm font-medium text-slate-600">Ejemplo con Foto</p>
               </div>
-              <div className="rounded-xl border border-dashed border-gray-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                Placeholder card sin foto
+              <div className="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm h-48 flex flex-col items-center justify-center">
+                <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full mb-3 flex items-center justify-center text-xl font-bold">JD</div>
+                <p className="text-sm font-medium text-slate-600">Ejemplo sin Foto</p>
               </div>
             </div>
-          </>
+          </div>
         ) : null}
 
         {step === 5 ? (
-          <>
+          <div className="space-y-8">
             <div>
-              <h2 className="text-sm font-semibold text-slate-900">Categorías (Obligatorio)</h2>
-              <p className="mt-1 text-xs text-slate-500">
-                Selecciona una o más. Si no existe tu categoría, escríbela abajo.
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <h2 className="text-sm font-semibold text-slate-900 mb-3">Categorías de Servicio <span className="text-rose-500">*</span></h2>
+              <div className="flex flex-wrap gap-2">
                 {categoryOptions.map((category) => (
                   <button
                     type="button"
                     key={category.id}
                     onClick={() => toggleCategory(category.id)}
-                    className={`rounded-full px-3 py-1 text-xs font-medium ring-1 transition ${
-                      selectedCategories.includes(category.id)
-                        ? "bg-emerald-600 text-white ring-emerald-600"
-                        : "bg-slate-100 text-slate-600 ring-slate-200"
-                    }`}
+                    className={`rounded-lg px-4 py-2.5 text-sm font-medium border transition-all shadow-sm ${selectedCategories.includes(category.id)
+                      ? "bg-emerald-600 text-white border-emerald-600 shadow-emerald-500/20 translate-y-[1px]"
+                      : "bg-white text-slate-600 border-slate-200 hover:border-emerald-300 hover:text-emerald-700 hover:bg-slate-50"
+                      }`}
                   >
                     {category.name}
                   </button>
                 ))}
               </div>
-              <div className="mt-4">
-                <label className="block text-sm font-semibold text-slate-900">
-                  Categoría libre (Opcional)
+
+              <div className="mt-4 max-w-sm">
+                <label className="block text-xs font-medium text-slate-600 mb-1">
+                  ¿No encuentras tu categoría? Agrégala aquí:
                 </label>
                 <input
                   name="custom_category"
                   type="text"
                   value={customCategory}
                   onChange={(event) => setCustomCategory(event.target.value)}
-                  placeholder="Ej. Seguros de salud"
-                  className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  placeholder="Ej. Seguros de mascotas"
+                  className="block w-full rounded-lg border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 text-sm transition-all"
                 />
               </div>
-              {fieldErrors.category ? (
-                <p className="mt-2 text-xs text-rose-600">{fieldErrors.category}</p>
-              ) : null}
+              {fieldErrors.category && <p className="mt-2 text-xs text-rose-600 font-medium">{fieldErrors.category}</p>}
             </div>
 
-            <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                <input
-                  type="checkbox"
-                  checked={coverageAll}
-                  onChange={(event) => {
-                    setCoverageAll(event.target.checked);
-                    if (event.target.checked) setSelectedRegions([]);
-                  }}
-                />
-                Cobertura nacional (Obligatorio)
-              </label>
-              <p className="mt-1 text-xs text-slate-500">
-                Puedes dejar cobertura nacional activada o desmarcarla y elegir solo las regiones donde atiendes.
-              </p>
-            </div>
-
-            <div className={regionDisabled ? "opacity-50 pointer-events-none" : ""}>
-              <h2 className="text-sm font-semibold text-slate-900">
-                Regiones (Obligatorio si no es cobertura nacional)
-              </h2>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {regionOptions.map((region) => (
-                  <button
-                    type="button"
-                    key={region.id}
-                    onClick={() => toggleRegion(region.id)}
-                    className={`rounded-full px-3 py-1 text-xs font-medium ring-1 transition ${
-                      selectedRegions.includes(region.id)
-                        ? "bg-emerald-600 text-white ring-emerald-600"
-                        : "bg-slate-100 text-slate-600 ring-slate-200"
-                    }`}
-                  >
-                    {region.name}
-                  </button>
-                ))}
+            <div className="pt-4 border-t border-slate-100">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="flex h-6 items-center">
+                  <input
+                    id="coverage_all"
+                    type="checkbox"
+                    checked={coverageAll}
+                    onChange={(event) => {
+                      setCoverageAll(event.target.checked);
+                      if (event.target.checked) setSelectedRegions([]);
+                    }}
+                    className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600"
+                  />
+                </div>
+                <div className="text-sm leading-6">
+                  <label htmlFor="coverage_all" className="font-semibold text-slate-900">
+                    Tengo cobertura en todo Chile
+                  </label>
+                  <p className="text-slate-500 text-xs">Desmarca esta casilla si solo atiendes regiones específicas.</p>
+                </div>
               </div>
-              {fieldErrors.regions ? (
-                <p className="mt-2 text-xs text-rose-600">{fieldErrors.regions}</p>
-              ) : null}
+
+              <div className={`transition-all duration-300 ${regionDisabled ? "opacity-40 pointer-events-none grayscale" : "opacity-100"}`}>
+                <h2 className="text-sm font-semibold text-slate-900 mb-3">
+                  Selecciona tus Regiones
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {regionOptions.map((region) => (
+                    <button
+                      type="button"
+                      key={region.id}
+                      onClick={() => toggleRegion(region.id)}
+                      className={`rounded-lg px-3 py-1.5 text-xs font-medium border transition-all ${selectedRegions.includes(region.id)
+                        ? "bg-slate-800 text-white border-slate-800"
+                        : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
+                        }`}
+                    >
+                      {region.name}
+                    </button>
+                  ))}
+                </div>
+                {fieldErrors.regions && <p className="mt-2 text-xs text-rose-600 font-medium">{fieldErrors.regions}</p>}
+              </div>
             </div>
-          </>
+          </div>
         ) : null}
 
         {step === 6 ? (
           <div>
-            <h2 className="text-sm font-semibold text-slate-900">
-              Archivo de respaldo (Obligatorio)
-            </h2>
-            <p className="mt-1 text-xs text-slate-500">
-              Se usará para validar que trabajas con la empresa que representas. Formatos permitidos: PDF, JPG, PNG.
-            </p>
-            <input
-              name="supporting_files"
-              type="file"
-              multiple
-              accept={allowedMimeTypes.join(",")}
-              onChange={(event) => {
-                const files = Array.from(event.target.files ?? []);
-                setSupportingFiles(files);
-              }}
-              className="mt-3 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-            {fieldErrors.supporting_files ? (
-              <p className="mt-2 text-xs text-rose-600">{fieldErrors.supporting_files}</p>
-            ) : null}
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-6">
+              <h2 className="text-sm font-semibold text-blue-900 flex items-center gap-2">
+                📄 Documentación Requerida
+              </h2>
+              <p className="mt-1 text-xs text-blue-700 leading-relaxed">
+                Para validar tu perfil y otorgarte el sello de verificación, necesitamos <strong>una prueba</strong> de que trabajas con la empresa que indicaste (ej. foto de credencial, contrato, o captura de correo corporativo). Este archivo es <strong>privado</strong>.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center w-full">
+              <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-slate-300 border-dashed rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg className="w-10 h-10 mb-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                  <p className="mb-2 text-sm text-slate-500 font-medium">Subir archivo de respaldo</p>
+                  <p className="text-xs text-slate-400">PDF, JPG o PNG</p>
+                </div>
+                <input
+                  name="supporting_files"
+                  type="file"
+                  multiple
+                  accept={allowedMimeTypes.join(",")}
+                  className="hidden"
+                  onChange={(event) => {
+                    const files = Array.from(event.target.files ?? []);
+                    setSupportingFiles(files);
+                  }}
+                />
+              </label>
+            </div>
+
+            {supportingFiles.length > 0 && (
+              <div className="mt-4 space-y-2">
+                {supportingFiles.map((file, idx) => (
+                  <div key={idx} className="flex items-center gap-2 p-3 bg-white border border-slate-200 rounded-md shadow-sm">
+                    <span className="text-xl">📎</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-slate-900 truncate">{file.name}</p>
+                      <p className="text-xs text-slate-500">{(file.size / 1024).toFixed(1)} KB</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {fieldErrors.supporting_files && <p className="mt-2 text-xs text-rose-600 font-medium">{fieldErrors.supporting_files}</p>}
           </div>
         ) : null}
 
         {step === 7 ? (
-          <>
-            <section className="rounded-xl border border-gray-200 bg-slate-50 p-4 text-sm text-slate-700">
-              <h2 className="text-sm font-semibold text-slate-900">Resumen</h2>
-              <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                <div><strong>Nombre:</strong> {formState.full_name || "-"}</div>
-                <div><strong>Email:</strong> {formState.email || "-"}</div>
-                <div><strong>Teléfono:</strong> {formState.phone || "-"}</div>
-                <div><strong>Empresa:</strong> {formState.company || "-"}</div>
-                <div><strong>Experiencia:</strong> {formState.experience_years || "-"}</div>
-                <div><strong>Especialidad:</strong> {formState.specialty || "-"}</div>
-                <div className="sm:col-span-2"><strong>Descripción:</strong> {formState.description || "-"}</div>
-                <div className="sm:col-span-2"><strong>WhatsApp:</strong> {formState.whatsapp_message || "-"}</div>
-                <div className="sm:col-span-2">
-                  <strong>Categorías:</strong> {summaryCategories.length > 0 ? summaryCategories.join(", ") : "-"}
+          <div className="space-y-6">
+            <section className="rounded-xl border border-slate-200 bg-slate-50/50 p-6 text-sm">
+              <h2 className="text-base font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Resumen de la solicitud</h2>
+              <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
+                <div><dt className="text-xs text-slate-500 uppercase tracking-wide">Nombre</dt><dd className="font-medium text-slate-900">{formState.full_name}</dd></div>
+                <div><dt className="text-xs text-slate-500 uppercase tracking-wide">Email</dt><dd className="font-medium text-slate-900">{formState.email}</dd></div>
+                <div><dt className="text-xs text-slate-500 uppercase tracking-wide">Teléfono</dt><dd className="font-medium text-slate-900">{formState.phone}</dd></div>
+                <div><dt className="text-xs text-slate-500 uppercase tracking-wide">Empresa</dt><dd className="font-medium text-slate-900">{formState.company}</dd></div>
+
+                <div className="sm:col-span-2 bg-white p-3 rounded-lg border border-slate-100">
+                  <dt className="text-xs text-slate-500 uppercase tracking-wide mb-1">Descripción</dt>
+                  <dd className="text-slate-700 italic">"{formState.description}"</dd>
                 </div>
+
                 <div className="sm:col-span-2">
-                  <strong>Categoría libre:</strong> {customCategory || "-"}
+                  <dt className="text-xs text-slate-500 uppercase tracking-wide">Categorías</dt>
+                  <dd className="mt-1 flex flex-wrap gap-1">
+                    {summaryCategories.map(c => <span key={c} className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/10">{c}</span>)}
+                    {customCategory && <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">{customCategory}</span>}
+                  </dd>
                 </div>
+
                 <div className="sm:col-span-2">
-                  <strong>Regiones:</strong> {summaryRegions.join(", ")}
+                  <dt className="text-xs text-slate-500 uppercase tracking-wide">Regiones</dt>
+                  <dd className="mt-1 text-slate-700">{summaryRegions.join(", ")}</dd>
                 </div>
-                <div><strong>Foto:</strong> {photoFile ? photoFile.name : "No enviada"}</div>
-                <div><strong>Archivos respaldo:</strong> {supportingFiles.length}</div>
-              </div>
+              </dl>
             </section>
 
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm text-slate-700">
-                <input
-                  name="accepted_terms"
-                  type="checkbox"
-                  checked={formState.accepted_terms}
-                  onChange={(event) => updateField("accepted_terms", event.target.checked)}
-                />
-                Acepto términos y condiciones (Obligatorio)
-              </label>
-              {fieldErrors.accepted_terms ? (
-                <p className="ml-6 text-xs text-rose-600">{fieldErrors.accepted_terms}</p>
-              ) : null}
-              <label className="flex items-center gap-2 text-sm text-slate-700">
-                <input
-                  name="accepted_data_use"
-                  type="checkbox"
-                  checked={formState.accepted_data_use}
-                  onChange={(event) => updateField("accepted_data_use", event.target.checked)}
-                />
-                Acepto el uso de mis datos (Obligatorio)
-              </label>
-              {fieldErrors.accepted_data_use ? (
-                <p className="ml-6 text-xs text-rose-600">{fieldErrors.accepted_data_use}</p>
-              ) : null}
+            <div className="space-y-4 pt-4">
+              <div className="flex items-start gap-3">
+                <div className="flex h-6 items-center">
+                  <input
+                    id="accepted_terms"
+                    name="accepted_terms"
+                    type="checkbox"
+                    checked={formState.accepted_terms}
+                    onChange={(event) => updateField("accepted_terms", event.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600"
+                  />
+                </div>
+                <div className="text-sm leading-6">
+                  <label htmlFor="accepted_terms" className="font-medium text-slate-900">
+                    Acepto los términos y condiciones
+                  </label>
+                  {fieldErrors.accepted_terms && <p className="text-xs text-rose-600">{fieldErrors.accepted_terms}</p>}
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="flex h-6 items-center">
+                  <input
+                    id="accepted_data_use"
+                    name="accepted_data_use"
+                    type="checkbox"
+                    checked={formState.accepted_data_use}
+                    onChange={(event) => updateField("accepted_data_use", event.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600"
+                  />
+                </div>
+                <div className="text-sm leading-6">
+                  <label htmlFor="accepted_data_use" className="font-medium text-slate-900">
+                    Acepto que mis datos sean procesados para la verificación
+                  </label>
+                  {fieldErrors.accepted_data_use && <p className="text-xs text-rose-600">{fieldErrors.accepted_data_use}</p>}
+                </div>
+              </div>
             </div>
-          </>
+          </div>
         ) : null}
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-100 mt-8">
           <button
             type="button"
             onClick={handleBack}
             disabled={step === 1}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            className="w-full sm:w-auto rounded-lg px-6 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors"
           >
-            Volver
+            ← Volver
           </button>
 
           {step < steps.length ? (
             <button
               type="button"
               onClick={handleNext}
-              className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white"
+              className="w-full sm:w-auto rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-all"
             >
-              Siguiente
+              Continuar
             </button>
           ) : (
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="w-full sm:w-auto rounded-lg bg-slate-900 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:opacity-70 disabled:cursor-wait transition-all"
             >
-              {isSubmitting ? "Enviando..." : "Enviar postulación"}
+              {isSubmitting ? "Enviando solicitud..." : "Finalizar Postulación"}
             </button>
           )}
         </div>
 
         {success ? (
-          <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-            ¡Solicitud recibida! El equipo revisará tu información. Serás redirigida al inicio en 5 segundos.
+          <div className="rounded-lg bg-emerald-50 p-4 text-center animate-fade-in">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 mb-3">
+              <svg className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            </div>
+            <h3 className="text-sm font-semibold text-emerald-800">¡Solicitud Enviada con Éxito!</h3>
+            <p className="mt-1 text-sm text-emerald-700">El equipo revisará tus datos. Redirigiendo...</p>
           </div>
         ) : null}
       </form>

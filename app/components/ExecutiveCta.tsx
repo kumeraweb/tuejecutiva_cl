@@ -6,7 +6,7 @@ export default function ExecutiveCta() {
         aria-hidden="true"
       >
         <div
-          className="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-tr from-[#10b981] to-[#776fff] opacity-20"
+          className="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-tr from-emerald-900/20 to-slate-800/30 opacity-20"
           style={{
             clipPath:
               "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
@@ -18,7 +18,7 @@ export default function ExecutiveCta() {
         aria-hidden="true"
       >
         <div
-          className="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-tr from-[#10b981] to-[#ff4694] opacity-20"
+          className="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-tr from-emerald-900/20 to-slate-800/30 opacity-20"
           style={{
             clipPath:
               "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
@@ -57,34 +57,26 @@ export default function ExecutiveCta() {
               </div>
             </div>
             <div className="relative lg:ml-auto">
-              <div className="relative rounded-xl bg-gray-900/90 p-8 shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
+              <div className="relative rounded-xl bg-white p-8 shadow-2xl ring-1 ring-gray-900/10 backdrop-blur-sm">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-emerald-500/20 p-3 rounded-lg">
-                    <svg
-                      className="w-8 h-8 text-emerald-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                      />
-                    </svg>
+                  <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
+                    <img
+                      src="/images/certification.png"
+                      alt="Sello de Certificación"
+                      className="w-12 h-12 object-contain"
+                    />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-lg font-bold text-slate-900">
                       Perfil Verificado
                     </h3>
-                    <p className="text-sm text-gray-400">Tu sello de calidad</p>
+                    <p className="text-sm text-slate-500">Tu sello de calidad</p>
                   </div>
                 </div>
-                <ul className="space-y-4 text-gray-300 text-sm">
+                <ul className="space-y-4 text-slate-600 text-sm">
                   <li className="flex gap-2 items-center">
                     <svg
-                      className="w-5 h-5 text-emerald-500"
+                      className="w-5 h-5 text-emerald-600"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
@@ -98,7 +90,7 @@ export default function ExecutiveCta() {
                   </li>
                   <li className="flex gap-2 items-center">
                     <svg
-                      className="w-5 h-5 text-emerald-500"
+                      className="w-5 h-5 text-emerald-600"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
@@ -112,7 +104,7 @@ export default function ExecutiveCta() {
                   </li>
                   <li className="flex gap-2 items-center">
                     <svg
-                      className="w-5 h-5 text-emerald-500"
+                      className="w-5 h-5 text-emerald-600"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >

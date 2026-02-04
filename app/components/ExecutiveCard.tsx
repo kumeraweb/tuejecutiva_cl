@@ -82,59 +82,78 @@ export default function ExecutiveCard({ executive }: ExecutiveCardProps) {
       data-coverage-regions={coverageRegions.map((region) => region.code).join(",")}
     >
       {isGold ? (
-        <div className="absolute top-0 right-0 bg-amber-100 text-amber-700 px-3 py-1 text-xs font-bold rounded-bl-lg z-10">
-          DESTACADA
+        <div className="absolute top-0 right-0 bg-amber-100 text-amber-700 px-3 py-1 text-[10px] tracking-wider font-bold rounded-bl-lg z-10 uppercase">
+          Destacada
         </div>
       ) : null}
       {isSilver ? (
-        <div className="absolute top-0 right-0 bg-slate-100 text-slate-600 px-3 py-1 text-xs font-bold rounded-bl-lg z-10">
-          MÁS ELEGIDA
+        <div className="absolute top-0 right-0 bg-slate-100 text-slate-600 px-3 py-1 text-[10px] tracking-wider font-bold rounded-bl-lg z-10 uppercase">
+          Más Elegida
         </div>
       ) : null}
 
-      <div className="p-6 flex flex-col h-full">
-        <div className="flex items-start gap-4 mb-4">
-          <img
-            src={safePhotoUrl}
-            alt={executive.name}
-            className={`h-16 w-16 rounded-full object-cover ring-2 ${
-              isGold
-                ? "ring-amber-400"
-                : isSilver
-                  ? "ring-slate-300"
-                  : "ring-transparent"
-            }`}
-          />
+      <div className="p-5 flex flex-col h-full relative">
+        {/* Verified Watermark/Badge */}
+        {executive.verified && (
+          <div className="absolute top-4 right-4 z-0 opacity-10 pointer-events-none">
+            <img src="/images/certification.png" alt="" className="w-24 h-24" />
+          </div>
+        )}
+
+        <div className="flex items-start gap-4 mb-5 relative z-10">
+          <div className="relative">
+            <img
+              src={safePhotoUrl}
+              alt={executive.name}
+              className={`h-16 w-16 rounded-full object-cover ring-2 ring-offset-2 ${isGold
+                  ? "ring-amber-400"
+                  : isSilver
+                    ? "ring-slate-200"
+                    : "ring-emerald-500/30"
+                }`}
+            />
+            {executive.verified && (
+              <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm" title="Ejecutiva Verificada">
+                <img src="/images/certification.png" alt="Verificada" className="w-6 h-6" />
+              </div>
+            )}
+          </div>
+
           <div>
-            <h3 className="text-lg font-bold text-slate-900 leading-tight">
+            <h3 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-emerald-700 transition-colors">
               <a href={`/ejecutivas/${executive.slug}`}>
                 <span className="absolute inset-0" />
                 {executive.name}
               </a>
             </h3>
-            <p className="text-sm text-slate-500 mt-1">{coverageLabel}</p>
 
-            {executive.verified ? (
-              <div className="mt-1 inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-                Verificada
-              </div>
-            ) : null}
+            <p className="text-xs font-medium text-slate-500 mt-1 flex items-center gap-1">
+              {executive.company ? (
+                <span className="text-slate-700 font-semibold">{executive.company}</span>
+              ) : null}
+            </p>
+
+            <p className="text-[11px] text-slate-400 mt-0.5 uppercase tracking-wide">
+              {coverageLabel.replace("Cobertura: ", "")}
+            </p>
           </div>
         </div>
 
-        <div className="flex-1">
-          <p className="text-sm text-slate-600 line-clamp-3 mb-4">
-            {safeDescription}
-          </p>
-
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+        <div className="flex-1 relative z-10">
+          <div className="flex flex-wrap gap-2 mb-3">
+            {safeSpecialty !== "Sin especialidad" && (
+              <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/10">
+                {safeSpecialty}
+              </span>
+            )}
+            <span className="inline-flex items-center rounded-md bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">
               {experienceLabel} años exp.
             </span>
-            <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-              {safeSpecialty}
-            </span>
           </div>
+
+          <p className="text-sm text-slate-600 line-clamp-2 mb-4 leading-relaxed">
+            {safeDescription}
+          </p>
         </div>
 
         <div className="mt-auto flex gap-3 pt-4 border-t border-gray-100 relative z-20">
@@ -142,13 +161,13 @@ export default function ExecutiveCard({ executive }: ExecutiveCardProps) {
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 rounded-md bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+            className="flex-1 rounded-lg bg-emerald-600 px-3 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 transition-all hover:shadow hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
           >
             WhatsApp
           </a>
           <a
             href={telLink}
-            className="rounded-md bg-white px-3 py-2 text-center text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50"
+            className="rounded-lg bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 hover:text-slate-900 transition-colors"
           >
             Llamar
           </a>

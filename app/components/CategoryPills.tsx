@@ -36,13 +36,13 @@ export default async function CategoryPills() {
               <Link
                 key={category.id}
                 href={`/servicios/${category.slug}`}
-                className="group flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-slate-50 text-slate-600 hover:bg-white hover:text-emerald-600 hover:shadow-md ring-1 ring-slate-900/5 hover:ring-emerald-500/20 transition-all duration-300 text-center h-full min-h-[120px]"
+                className="group flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-white text-slate-600 hover:text-emerald-700 shadow-sm hover:shadow-md ring-1 ring-slate-200 hover:ring-emerald-500/30 transition-all duration-300 text-center h-full min-h-[120px]"
               >
                 <Icon
-                  className="w-8 h-8 opacity-75 group-hover:opacity-100 group-hover:scale-110 transition-transform"
+                  className="w-8 h-8 text-emerald-600/80 group-hover:text-emerald-600 group-hover:scale-110 transition-transform"
                   strokeWidth={1.5}
                 />
-                <span className="text-xs sm:text-sm font-semibold leading-tight text-balance">
+                <span className="text-xs sm:text-sm font-medium leading-tight text-balance">
                   {category.name}
                 </span>
               </Link>
