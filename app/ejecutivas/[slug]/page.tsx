@@ -45,7 +45,7 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const exec = executive as {
+  const exec = executive as unknown as {
     executive_categories?: ExecutiveCategoryJoin[];
     executive_regions?: ExecutiveRegionJoin[];
     coverage_all: boolean;
