@@ -1,11 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { getSubmissionDetail } from "@/lib/onboarding";
 
 export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const submission = await getSubmissionDetail(params.id);
+  const { id } = await params;
+  const submission = await getSubmissionDetail(id);
   if (!submission) {
     return NextResponse.json({ error: "Submission no encontrada." }, { status: 404 });
   }
