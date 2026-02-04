@@ -45,41 +45,58 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const categories = (executive.executive_categories ?? [])
+  const exec = executive as {
+    executive_categories?: ExecutiveCategoryJoin[];
+    executive_regions?: ExecutiveRegionJoin[];
+    coverage_all: boolean;
+    phone: string | null;
+    whatsapp_message: string | null;
+    photo_url: string | null;
+    name: string;
+    description: string | null;
+    specialty: string | null;
+    company: string | null;
+    experience_years: number | null;
+    verified: boolean;
+    verified_date: string | null;
+    faq: unknown;
+  };
+
+  const categories = (exec.executive_categories ?? [])
     .map((item: ExecutiveCategoryJoin) => item.categories)
     .filter(Boolean);
   const category = categories[0] ?? { name: "General", slug: "general" };
 
-  const coverageRegions = (executive.executive_regions ?? [])
+  const coverageRegions = (exec.executive_regions ?? [])
     .map((item: ExecutiveRegionJoin) => item.regions)
     .filter(Boolean);
 
-  const coverageLabel = executive.coverage_all
+  const coverageLabel = exec.coverage_all
     ? "Cobertura: Todo Chile"
     : coverageRegions.length > 0
       ? `Cobertura: ${coverageRegions.map((region) => region.name).join(", ")}`
       : "Cobertura: Sin definir";
 
-  const safePhone = executive.phone || "";
-  const safeWhatsapp = executive.whatsapp_message || "";
+  const safePhone = exec.phone || "";
+  const safeWhatsapp = exec.whatsapp_message || "";
   const safePhotoUrl =
-    executive.photo_url ||
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(executive.name)}&background=ecfeff&color=155e75&size=200`;
+    exec.photo_url ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(exec.name)}&background=ecfeff&color=155e75&size=200`;
   const waLink = safePhone
     ? `https://wa.me/${safePhone}?text=${encodeURIComponent(safeWhatsapp)}`
     : "#";
   const telLink = safePhone ? `tel:${safePhone}` : "#";
-  const safeDescription = executive.description || "Sin descripción.";
-  const safeSpecialty = executive.specialty || "Sin especialidad";
-  const safeCompany = executive.company || "Sin empresa";
+  const safeDescription = exec.description || "Sin descripción.";
+  const safeSpecialty = exec.specialty || "Sin especialidad";
+  const safeCompany = exec.company || "Sin empresa";
   const experienceLabel =
-    executive.experience_years === null || executive.experience_years === undefined
+    exec.experience_years === null || exec.experience_years === undefined
       ? "—"
-      : executive.experience_years;
-  const verifiedDateLabel = executive.verified_date || "sin fecha";
+      : exec.experience_years;
+  const verifiedDateLabel = exec.verified_date || "sin fecha";
 
-  const faq = Array.isArray(executive.faq)
-    ? (executive.faq as ExecutiveFaqItem[])
+  const faq = Array.isArray(exec.faq)
+    ? (exec.faq as ExecutiveFaqItem[])
     : [];
 
   return (
