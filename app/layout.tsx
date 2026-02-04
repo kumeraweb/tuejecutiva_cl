@@ -15,7 +15,7 @@ const defaultDescription =
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 export const metadata: Metadata = {
-  metadataBase: siteUrl ? new URL(siteUrl) : undefined,
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: {
     default: defaultTitle,
     template: `%s | ${defaultTitle}`,
@@ -31,17 +31,23 @@ export const metadata: Metadata = {
     "seguros",
     "servicios hogar",
   ],
-  icons: {
-    icon: "/favicon.png",
+  alternates: {
+    canonical: "/",
   },
-  alternates: siteUrl ? { canonical: siteUrl } : undefined,
   openGraph: {
     type: "website",
-    url: siteUrl,
+    url: "/",
     title: defaultTitle,
     description: defaultDescription,
     siteName: "TuEjecutiva",
-    images: ["/og-image.jpg"],
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "TuEjecutiva.cl",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
