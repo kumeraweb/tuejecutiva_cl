@@ -55,6 +55,9 @@ export const metadata: Metadata = {
     description: defaultDescription,
     images: ["/og-image.jpg"],
   },
+  icons: {
+    icon: "/logo/logonbg.png",
+  },
 };
 
 export const viewport: Viewport = {
