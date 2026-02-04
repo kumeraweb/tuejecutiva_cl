@@ -1,5 +1,42 @@
 import { supabase } from "./supabaseClient";
 
+export interface ExecutiveCategoryJoin {
+  categories: {
+    id: string;
+    name: string;
+    slug: string;
+  } | null;
+}
+
+export interface ExecutiveRegionJoin {
+  regions: {
+    id: string;
+    code: string;
+    name: string;
+  } | null;
+}
+
+export interface ExecutiveRecord {
+  id: string;
+  name: string;
+  slug: string;
+  phone: string | null;
+  company: string | null;
+  experience_years: number | null;
+  specialty: string | null;
+  description: string | null;
+  whatsapp_message: string | null;
+  photo_url: string | null;
+  company_logo_url: string | null;
+  faq: unknown;
+  coverage_all: boolean;
+  plan: string | null;
+  verified: boolean;
+  verified_date: string | null;
+  executive_categories?: ExecutiveCategoryJoin[];
+  executive_regions?: ExecutiveRegionJoin[];
+}
+
 /**
  * Campos devueltos por la tabla `categories`.
  * - id, slug, name: identificadores y etiquetas visibles.
@@ -65,7 +102,7 @@ export async function getCategoryBySlug(slug: string) {
  * - executive_categories: categorias asociadas (vía join table).
  * - executive_regions: regiones asociadas (vía join table).
  */
-export async function getExecutives() {
+export async function getExecutives(): Promise<ExecutiveRecord[]> {
   const executivesSelect = [
     "id",
     "name",
@@ -96,14 +133,14 @@ export async function getExecutives() {
     throw new Error(`getExecutives failed: ${error.message}`);
   }
 
-  return data ?? [];
+  return (data ?? []) as ExecutiveRecord[];
 }
 
 /**
  * Ejecutivas filtradas por categoria (slug).
  * Respeta el esquema N:N mediante `executive_categories`.
  */
-export async function getExecutivesByCategory(slug: string) {
+export async function getExecutivesByCategory(slug: string): Promise<ExecutiveRecord[]> {
   const category = await getCategoryBySlug(slug);
   if (!category) return [];
 
@@ -143,10 +180,10 @@ export async function getExecutivesByCategory(slug: string) {
   }
 
   const executives = (data ?? [])
-    .map((row) => row.executives)
-    .filter(Boolean) as Array<{ id: string } & Record<string, unknown>>;
+    .map((row) => (row as { executives?: ExecutiveRecord }).executives)
+    .filter(Boolean) as ExecutiveRecord[];
 
-  const unique = new Map<string, (typeof executives)[number]>();
+  const unique = new Map<string, ExecutiveRecord>();
   executives.forEach((executive) => {
     unique.set(executive.id, executive);
   });
@@ -157,7 +194,7 @@ export async function getExecutivesByCategory(slug: string) {
 /**
  * Ejecutiva individual por slug.
  */
-export async function getExecutiveBySlug(slug: string) {
+export async function getExecutiveBySlug(slug: string): Promise<ExecutiveRecord | null> {
   const normalizedSlug = slug.trim().toLowerCase();
 
   const executivesSelect = [
@@ -191,5 +228,5 @@ export async function getExecutiveBySlug(slug: string) {
     throw new Error(`getExecutiveBySlug failed: ${error.message}`);
   }
 
-  return data;
+  return (data ?? null) as ExecutiveRecord | null;
 }

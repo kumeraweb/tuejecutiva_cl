@@ -15,22 +15,6 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-interface ExecutiveCategoryJoin {
-  categories: {
-    id: string;
-    name: string;
-    slug: string;
-  } | null;
-}
-
-interface ExecutiveRegionJoin {
-  regions: {
-    id: string;
-    code: string;
-    name: string;
-  } | null;
-}
-
 interface ExecutiveFaqItem {
   question: string;
   answer: string;
@@ -45,32 +29,16 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const exec = executive as unknown as {
-    executive_categories?: ExecutiveCategoryJoin[];
-    executive_regions?: ExecutiveRegionJoin[];
-    coverage_all: boolean;
-    phone: string | null;
-    whatsapp_message: string | null;
-    photo_url: string | null;
-    company_logo_url: string | null;
-    name: string;
-    description: string | null;
-    specialty: string | null;
-    company: string | null;
-    experience_years: number | null;
-    verified: boolean;
-    verified_date: string | null;
-    faq: unknown;
-  };
+  const exec = executive;
 
   const categories = (exec.executive_categories ?? [])
-    .map((item: ExecutiveCategoryJoin) => item.categories)
-    .filter(Boolean);
+    .map((item) => item.categories)
+    .filter(Boolean) as Array<NonNullable<(typeof exec.executive_categories)[number]["categories"]>>;
   const category = categories[0] ?? { name: "General", slug: "general" };
 
   const coverageRegions = (exec.executive_regions ?? [])
-    .map((item: ExecutiveRegionJoin) => item.regions)
-    .filter(Boolean) as Array<NonNullable<ExecutiveRegionJoin["regions"]>>;
+    .map((item) => item.regions)
+    .filter(Boolean) as Array<NonNullable<(typeof exec.executive_regions)[number]["regions"]>>;
 
   const coverageLabel = exec.coverage_all
     ? "Cobertura: Todo Chile"

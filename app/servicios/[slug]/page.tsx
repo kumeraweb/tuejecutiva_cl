@@ -14,7 +14,7 @@ import {
   getExecutivesByCategory,
   getRegions,
 } from "@/lib/queries";
-import type { Executive } from "@/app/components/ExecutiveCard";
+import type { ExecutiveRecord } from "@/lib/queries";
 import type { ElementType } from "react";
 import { notFound } from "next/navigation";
 
@@ -26,7 +26,7 @@ interface PageProps {
 }
 
 function filterExecutives(
-  list: Executive[],
+  list: ExecutiveRecord[],
   coverageAllOnly: boolean,
   regionCodes: string[]
 ) {
@@ -38,9 +38,9 @@ function filterExecutives(
   }
   return list.filter((exec) => {
     if (exec.coverage_all) return true;
-    const execRegionCodes = (exec.executive_regions ?? [])
-      .map((join) => join?.regions?.code)
-      .filter((code): code is string => Boolean(code));
+  const execRegionCodes = (exec.executive_regions ?? [])
+    .map((join) => join?.regions?.code)
+    .filter((code): code is string => Boolean(code));
     return execRegionCodes.some((code) => regionCodes.includes(code));
   });
 }
@@ -80,11 +80,7 @@ export default async function ServicioDetallePage({
     getExecutivesByCategory(safeSlug),
   ]);
 
-  const executives = filterExecutives(
-    allExecutives as unknown as Executive[],
-    coverageAllOnly,
-    selectedRegions
-  );
+  const executives = filterExecutives(allExecutives, coverageAllOnly, selectedRegions);
 
   const Icon = iconMap[category.slug] || Shield;
   const showEmergencyWarning =
