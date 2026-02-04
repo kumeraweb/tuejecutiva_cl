@@ -8,7 +8,7 @@ import {
   Scale,
   Wrench,
 } from "lucide-react";
-import { getCategories } from "@/lib/queries";
+import { getCategoriesWithExecutives } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +22,7 @@ const iconMap: Record<string, ElementType> = {
 };
 
 export default async function ServiciosIndexPage() {
-  const categories = await getCategories();
+  const categories = await getCategoriesWithExecutives();
 
   return (
     <main className="bg-white">

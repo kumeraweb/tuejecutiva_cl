@@ -55,6 +55,21 @@ export async function getCategories() {
   return data ?? [];
 }
 
+export async function getCategoriesWithExecutives() {
+  const [categories, categoryLinks] = await Promise.all([
+    getCategories(),
+    supabase.from("executive_categories").select("category_id"),
+  ]);
+
+  const { data: links, error } = categoryLinks;
+  if (error) {
+    throw new Error(`getCategoriesWithExecutives failed: ${error.message}`);
+  }
+
+  const categoryIds = new Set((links ?? []).map((row) => row.category_id));
+  return categories.filter((category) => categoryIds.has(category.id));
+}
+
 /**
  * Campos devueltos por la tabla `regions`.
  * - id, code, name: identificadores y etiquetas visibles.

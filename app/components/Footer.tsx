@@ -62,7 +62,15 @@ export default function Footer() {
             </h3>
             <ul className="mt-4 space-y-4">
               <li className="text-sm text-slate-500">
-                Operado por <strong>{siteConfig.operator}</strong>
+                Operado por{" "}
+                <a
+                  href="https://www.kumeraweb.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-slate-700 hover:text-emerald-600 transition-colors"
+                >
+                  Kumera
+                </a>
               </li>
               <li className="text-sm text-slate-500">
                 Contacto:{" "}

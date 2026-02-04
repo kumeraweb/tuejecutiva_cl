@@ -8,7 +8,7 @@ import {
   Scale,
   Wrench,
 } from "lucide-react";
-import { getCategories } from "@/lib/queries";
+import { getCategoriesWithExecutives } from "@/lib/queries";
 
 const iconMap: Record<string, ElementType> = {
   "planes-de-rescate-y-ambulancia": Ambulance,
@@ -20,7 +20,7 @@ const iconMap: Record<string, ElementType> = {
 };
 
 export default async function CategoryPills() {
-  const categories = await getCategories();
+  const categories = await getCategoriesWithExecutives();
 
   return (
     <section id="buscar" className="py-12 bg-white border-b border-gray-100">
