@@ -19,6 +19,7 @@ function hasValidSecret(request: NextRequest, adminSecret: string) {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
+        secure: process.env.NODE_ENV === "production",
       });
       return { authorized: true, response };
     }
@@ -27,21 +28,31 @@ function hasValidSecret(request: NextRequest, adminSecret: string) {
   return { authorized: false, response: null as NextResponse | null };
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Admin protection: requires ADMIN_SECRET via header/cookie; in dev it can be seeded via ?admin=SECRET.
   const adminSecret = process.env.ADMIN_SECRET;
   if (!adminSecret) {
     return new NextResponse("Forbidden", { status: 403 });
   }
 
-  const { authorized, response } = hasValidSecret(request, adminSecret);
-  if (!authorized) {
-    return new NextResponse("Forbidden", { status: 403 });
+  const pathname = request.nextUrl.pathname;
+
+  if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
+    const { authorized, response } = hasValidSecret(request, adminSecret);
+    if (!authorized) {
+      return new NextResponse("Forbidden", { status: 403 });
+    }
+
+    const nextResponse = response ?? NextResponse.next();
+    nextResponse.headers.set("x-pathname", pathname);
+    return nextResponse;
   }
 
-  return response ?? NextResponse.next();
+  const nextResponse = NextResponse.next();
+  nextResponse.headers.set("x-pathname", pathname);
+  return nextResponse;
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/admin", "/admin/:path*", "/api/admin/:path*", "/onboarding/:path*"],
 };

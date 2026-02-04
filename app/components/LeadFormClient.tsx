@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle } from "lucide-react";
 
 interface CategoryOption {
   id: string;
@@ -15,33 +14,45 @@ interface LeadFormClientProps {
 export default function LeadFormClient({ categories }: LeadFormClientProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [whatsAppLink, setWhatsAppLink] = useState("#");
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData);
+    const mensaje = [
+      `Nombre: ${data.name ?? ""}`,
+      `Teléfono: ${data.phone ?? ""}`,
+      `Rubro: ${data.category ?? ""}`,
+      `Correo: ${data.email ?? ""}`,
+      `Mensaje: ${data.message ?? ""}`,
+    ].join("\n");
 
-    // Dev only: capture
-    // eslint-disable-next-line no-console
-    console.log("Lead capture (DEV):", data);
+    try {
+      const payload = new FormData();
+      payload.set("nombre", String(data.name ?? ""));
+      payload.set("email", String(data.email ?? ""));
+      payload.set("mensaje", mensaje);
 
-    const text =
-      `Hola *TuEjecutiva*, me gustaría postular al portal.\n\n` +
-      `*Nombre:* ${data.name ?? ""}\n` +
-      `*Rubro:* ${data.category ?? ""}\n` +
-      `*Tel:* ${data.phone ?? ""}\n\n` +
-      `Gracias.`;
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        body: payload,
+      });
 
-    const waLink = `https://wa.me/56900000000?text=${encodeURIComponent(text)}`;
-    setWhatsAppLink(waLink);
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null);
+        throw new Error(payload?.error || "No pudimos enviar tu postulación.");
+      }
 
-    setTimeout(() => {
-      setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 600);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error inesperado.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -163,6 +174,11 @@ export default function LeadFormClient({ categories }: LeadFormClientProps) {
           >
             ¡Solicitud recibida! Te contactaremos pronto.
           </div>
+          {error ? (
+            <div className="text-sm font-medium text-rose-600 mb-3 text-center bg-rose-50 p-2 rounded-lg">
+              {error}
+            </div>
+          ) : null}
           <button
             type="submit"
             id="submit-btn"
@@ -175,26 +191,6 @@ export default function LeadFormClient({ categories }: LeadFormClientProps) {
           >
             {isSubmitting ? "Enviando..." : isSubmitted ? "Enviado" : "Postular Ahora"}
           </button>
-        </div>
-
-        <div
-          id="whatsapp-fallback"
-          className={`mt-6 text-center border-t border-gray-100 pt-6 ${
-            isSubmitted ? "" : "hidden"
-          }`}
-        >
-          <p className="text-sm text-slate-500 mb-3">
-            ¿Prefieres escribirnos directo?
-          </p>
-          <a
-            id="whatsapp-btn"
-            href={whatsAppLink}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 text-emerald-600 font-semibold hover:text-emerald-500 transition-colors"
-          >
-            <MessageCircle className="w-5 h-5" /> Enviar mensaje por WhatsApp
-          </a>
         </div>
       </form>
     </div>

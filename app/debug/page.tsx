@@ -4,10 +4,15 @@ import {
   getExecutivesByCategory,
   getRegions,
 } from "@/lib/queries";
+import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function DebugPage() {
+  if (process.env.NODE_ENV === "production") {
+    notFound();
+  }
+
   try {
     const [categories, regions, executives] = await Promise.all([
       getCategories(),

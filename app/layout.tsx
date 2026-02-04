@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -55,19 +56,25 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const requestHeaders = await headers();
+  const pathname = requestHeaders.get("x-pathname") || "";
+  const isOnboarding = pathname.startsWith("/onboarding");
+  const isOnboardingDev = pathname.startsWith("/onboarding/dev");
+  const showChrome = !(isOnboarding && !isOnboardingDev);
+
   return (
     <html lang="es" className="h-full antialiased scroll-smooth">
       <body
         className={`${inter.className} bg-gray-50 text-slate-900 min-h-full flex flex-col`}
       >
-        <Header />
+        {showChrome ? <Header /> : null}
         {children}
-        <Footer />
+        {showChrome ? <Footer /> : null}
       </body>
     </html>
   );

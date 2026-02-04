@@ -4,10 +4,15 @@ import {
   getOrCreateDevToken,
   getRegionsForOnboarding,
 } from "@/lib/onboarding";
+import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function OnboardingDevPage() {
+  if (process.env.NODE_ENV === "production") {
+    notFound();
+  }
+
   const devToken = await getOrCreateDevToken();
   const [categories, regions] = await Promise.all([
     getCategoriesForOnboarding(),
