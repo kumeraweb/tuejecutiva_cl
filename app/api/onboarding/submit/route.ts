@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     if (!isTokenValid(token)) {
       return NextResponse.json({ error: "Token inválido o expirado." }, { status: 403 });
     }
-    tokenId = token.id;
+    tokenId = token ? token.id : null;
 
     const fullName = getString(formData.get("full_name"));
     const email = getString(formData.get("email"));
