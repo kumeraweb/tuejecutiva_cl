@@ -81,7 +81,7 @@ export default async function ServicioDetallePage({
   ]);
 
   const executives = filterExecutives(
-    allExecutives as Executive[],
+    allExecutives as unknown as Executive[],
     coverageAllOnly,
     selectedRegions
   );
