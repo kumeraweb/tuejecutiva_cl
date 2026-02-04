@@ -51,9 +51,17 @@ export interface OnboardingSubmissionRegion {
 
 export interface OnboardingSubmissionFile {
   id: string;
-  file_type: "contract" | "identity" | "other" | "photo";
+  file_type: "contract" | "identity" | "other";
   file_path: string;
   file_name: string;
+  mime_type: string;
+  created_at: string;
+}
+
+export interface OnboardingSubmissionPhoto {
+  id: string;
+  submission_id: string;
+  photo_path: string;
   mime_type: string;
   created_at: string;
 }
@@ -218,6 +226,7 @@ export async function getSubmissionDetail(id: string) {
         "onboarding_submission_categories ( categories ( id, name, slug ) )",
         "onboarding_submission_regions ( regions ( id, code, name ) )",
         "onboarding_submission_files ( id, file_type, file_path, file_name, mime_type, created_at )",
+        "onboarding_submission_photos ( id, submission_id, photo_path, mime_type, created_at )",
       ].join(",")
     )
     .eq("id", id)
@@ -231,6 +240,7 @@ export async function getSubmissionDetail(id: string) {
     onboarding_submission_categories: OnboardingSubmissionCategory[];
     onboarding_submission_regions: OnboardingSubmissionRegion[];
     onboarding_submission_files: OnboardingSubmissionFile[];
+    onboarding_submission_photos: OnboardingSubmissionPhoto[];
   }) | null;
 }
 
@@ -381,12 +391,10 @@ export async function uploadSubmissionPhoto(params: {
   }
 
   const { error: insertError } = await supabaseAdmin
-    .from("onboarding_submission_files")
+    .from("onboarding_submission_photos")
     .insert({
       submission_id: submissionId,
-      file_type: "photo",
-      file_path: path,
-      file_name: file.name,
+      photo_path: path,
       mime_type: file.type || "application/octet-stream",
     });
 

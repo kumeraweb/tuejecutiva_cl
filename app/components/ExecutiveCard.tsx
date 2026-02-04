@@ -1,3 +1,5 @@
+import { getExecutivePhotoUrl } from "@/lib/executivePhoto";
+
 export interface ExecutiveRegion {
   code: string;
   name: string;
@@ -58,8 +60,8 @@ export default function ExecutiveCard({ executive }: ExecutiveCardProps) {
 
   const safePhone = executive.phone || "";
   const safeWhatsapp = executive.whatsapp_message || "";
-  const safePhotoUrl =
-    executive.photo_url ||
+  const photoUrl =
+    getExecutivePhotoUrl(executive.photo_url) ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(executive.name)}&background=ecfeff&color=155e75&size=200`;
 
   const waLink = safePhone
@@ -102,9 +104,9 @@ export default function ExecutiveCard({ executive }: ExecutiveCardProps) {
 
         <div className="flex items-start gap-4 mb-5 relative z-10">
           <div className="relative">
-            <img
-              src={safePhotoUrl}
-              alt={executive.name}
+          <img
+            src={photoUrl}
+            alt={executive.name}
               className={`h-16 w-16 rounded-full object-cover ring-2 ring-offset-2 ${isGold
                   ? "ring-amber-400"
                   : isSilver

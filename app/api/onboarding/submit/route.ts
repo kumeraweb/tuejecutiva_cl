@@ -89,7 +89,7 @@ export async function POST(request: Request) {
     const photoFileEntry = formData.get("photo_file");
     const photoFile =
       photoFileEntry instanceof File && photoFileEntry.size > 0 ? photoFileEntry : null;
-    if (photoFile && !["image/jpeg", "image/png"].includes(photoFile.type)) {
+    if (photoFile && !["image/jpeg", "image/png", "image/webp"].includes(photoFile.type)) {
       return NextResponse.json({ error: "Formato de foto no permitido." }, { status: 400 });
     }
 

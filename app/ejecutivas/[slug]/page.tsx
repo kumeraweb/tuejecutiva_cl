@@ -12,6 +12,7 @@ import {
   type ExecutiveCategoryJoin,
   type ExecutiveRegionJoin,
 } from "@/lib/queries";
+import { getExecutivePhotoUrl } from "@/lib/executivePhoto";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +54,7 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
   const safePhone = exec.phone || "";
   const safeWhatsapp = exec.whatsapp_message || "";
   const safePhotoUrl =
-    exec.photo_url ||
+    getExecutivePhotoUrl(exec.photo_url) ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(exec.name)}&background=ecfeff&color=155e75&size=200`;
   const waLink = safePhone
     ? `https://wa.me/${safePhone}?text=${encodeURIComponent(safeWhatsapp)}`

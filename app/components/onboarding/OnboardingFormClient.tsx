@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 interface CategoryOption {
@@ -22,7 +23,7 @@ interface OnboardingFormClientProps {
 }
 
 const allowedMimeTypes = ["application/pdf", "image/jpeg", "image/png"];
-const allowedPhotoTypes = ["image/jpeg", "image/png"];
+const allowedPhotoTypes = ["image/jpeg", "image/png", "image/webp"];
 
 const steps = [
   "Datos personales",
@@ -416,11 +417,14 @@ export default function OnboardingFormClient({
               </p>
             </div>
 
-            {/* Styled Placeholder */}
-            <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 flex flex-col items-center justify-center text-center group hover:bg-slate-50 transition-colors">
-              <span className="text-3xl mb-2 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all">📱</span>
-              <p className="text-sm font-medium text-slate-600">Vista previa del mensaje</p>
-              <p className="text-xs text-slate-400 mt-1">Aquí se mostrará cómo verá el cliente el mensaje en su celular.</p>
+            <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 flex flex-col items-center justify-center text-center">
+              <Image
+                src="/images/wsppex.png"
+                alt="Ejemplo de mensaje de WhatsApp"
+                width={720}
+                height={480}
+                className="w-full max-w-md h-auto rounded-lg"
+              />
             </div>
           </div>
         ) : null}
@@ -439,10 +443,10 @@ export default function OnboardingFormClient({
                     <p className="mb-2 text-sm text-slate-500"><span className="font-semibold text-emerald-600">Haz clic para subir</span> o arrastra la imagen</p>
                     <p className="text-xs text-slate-400">JPG o PNG (MAX. 2MB)</p>
                   </div>
-                  <input
-                    name="photo_file"
-                    type="file"
-                    accept="image/jpeg,image/png"
+              <input
+                name="photo_file"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
                     className="hidden"
                     onChange={(event) => {
                       const file = event.target.files?.[0] || null;
@@ -462,16 +466,28 @@ export default function OnboardingFormClient({
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {/* Placeholders styles */}
-              <div className="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm h-48 flex flex-col items-center justify-center">
-                <div className="w-16 h-16 bg-slate-100 rounded-full mb-3 flex items-center justify-center text-2xl">👤</div>
-                <p className="text-sm font-medium text-slate-600">Ejemplo con Foto</p>
+              <div className="rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm h-48 flex items-center justify-center">
+                <Image
+                  src="/images/ejecutivaf.png"
+                  alt="Ejemplo de ejecutiva con foto"
+                  width={480}
+                  height={360}
+                  className="w-full max-w-[220px] h-auto rounded-lg"
+                />
               </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm h-48 flex flex-col items-center justify-center">
-                <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full mb-3 flex items-center justify-center text-xl font-bold">JD</div>
-                <p className="text-sm font-medium text-slate-600">Ejemplo sin Foto</p>
+              <div className="rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm h-48 flex items-center justify-center">
+                <Image
+                  src="/images/ejecutivasf.png"
+                  alt="Ejemplo de ejecutiva sin foto"
+                  width={480}
+                  height={360}
+                  className="w-full max-w-[220px] h-auto rounded-lg"
+                />
               </div>
             </div>
+            <p className="text-xs text-slate-500">
+              La foto es opcional. Si no subes una, se mostrarán tus iniciales con un placeholder.
+            </p>
           </div>
         ) : null}
 

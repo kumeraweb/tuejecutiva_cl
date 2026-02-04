@@ -46,16 +46,20 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
 
   const files = await Promise.all(
     submission.onboarding_submission_files.map(async (file) => {
-      const signedUrl =
-        file.file_type === "photo"
-          ? await createSignedPhotoUrl(file.file_path)
-          : await createSignedFileUrl(file.file_path);
+      const signedUrl = await createSignedFileUrl(file.file_path);
       return { ...file, signedUrl };
     })
   );
 
-  const photoFile = files.find((file) => file.file_type === "photo") || null;
-  const supportingFiles = files.filter((file) => file.file_type !== "photo");
+  const supportingFiles = files;
+
+  const photos = await Promise.all(
+    submission.onboarding_submission_photos.map(async (photo) => ({
+      ...photo,
+      signedUrl: await createSignedPhotoUrl(photo.photo_path),
+    }))
+  );
+  const photoFile = photos[0] || null;
 
   const copyPayload = {
     full_name: submission.full_name,
@@ -217,7 +221,7 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
                     alt={`Foto de ${submission.full_name}`}
                     className="h-48 w-48 rounded-lg object-cover"
                   />
-                  <div className="text-xs text-slate-500">{photoFile.file_name}</div>
+                  <div className="text-xs text-slate-500">{photoFile.photo_path}</div>
                   <a
                     href={photoFile.signedUrl}
                     target="_blank"
