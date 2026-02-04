@@ -7,7 +7,11 @@ import {
   Phone,
 } from "lucide-react";
 import { notFound } from "next/navigation";
-import { getExecutiveBySlug } from "@/lib/queries";
+import {
+  getExecutiveBySlug,
+  type ExecutiveCategoryJoin,
+  type ExecutiveRegionJoin,
+} from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -33,12 +37,12 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
 
   const categories = (exec.executive_categories ?? [])
     .map((item) => item.categories)
-    .filter(Boolean) as Array<NonNullable<(typeof exec.executive_categories)[number]["categories"]>>;
+    .filter(Boolean) as Array<NonNullable<ExecutiveCategoryJoin["categories"]>>;
   const category = categories[0] ?? { name: "General", slug: "general" };
 
   const coverageRegions = (exec.executive_regions ?? [])
     .map((item) => item.regions)
-    .filter(Boolean) as Array<NonNullable<(typeof exec.executive_regions)[number]["regions"]>>;
+    .filter(Boolean) as Array<NonNullable<ExecutiveRegionJoin["regions"]>>;
 
   const coverageLabel = exec.coverage_all
     ? "Cobertura: Todo Chile"
