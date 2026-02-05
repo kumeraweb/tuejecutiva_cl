@@ -20,6 +20,7 @@ export interface Executive {
   description: string | null;
   whatsapp_message: string | null;
   photo_url: string | null;
+  company_logo_url: string | null;
   coverage_all: boolean;
   plan: "bronce" | "plata" | "oro" | null;
   verified: boolean | null;
@@ -94,7 +95,12 @@ export default function ExecutiveCard({ executive }: ExecutiveCardProps) {
         </div>
       ) : null}
 
-      <div className="p-5 flex flex-col h-full relative">
+      {/* Main Card Link - Stretched to cover the whole card */}
+      <a href={`/ejecutivas/${executive.slug}`} className="absolute inset-0 z-0">
+        <span className="sr-only">Ver perfil de {executive.name}</span>
+      </a>
+
+      <div className="p-5 flex flex-col h-full relative pointer-events-none">
         {/* Verified Watermark/Badge */}
         {executive.verified && (
           <div className="absolute top-4 right-4 z-0 opacity-10 pointer-events-none">
@@ -102,16 +108,16 @@ export default function ExecutiveCard({ executive }: ExecutiveCardProps) {
           </div>
         )}
 
-        <div className="flex items-start gap-4 mb-5 relative z-10">
-          <div className="relative">
-          <img
-            src={photoUrl}
-            alt={executive.name}
+        <div className="flex items-center gap-4 mb-4 relative z-10">
+          <div className="relative flex-shrink-0">
+            <img
+              src={photoUrl}
+              alt={executive.name}
               className={`h-16 w-16 rounded-full object-cover ring-2 ring-offset-2 ${isGold
-                  ? "ring-amber-400"
-                  : isSilver
-                    ? "ring-slate-200"
-                    : "ring-emerald-500/30"
+                ? "ring-amber-400"
+                : isSilver
+                  ? "ring-slate-200"
+                  : "ring-emerald-500/30"
                 }`}
             />
             {executive.verified && (
@@ -123,21 +129,38 @@ export default function ExecutiveCard({ executive }: ExecutiveCardProps) {
 
           <div>
             <h3 className="text-lg font-bold text-slate-900 leading-tight group-hover:text-emerald-700 transition-colors">
-              <a href={`/ejecutivas/${executive.slug}`}>
-                <span className="absolute inset-0" />
-                {executive.name}
-              </a>
+              {executive.name}
             </h3>
-
-            <p className="text-xs font-medium text-slate-500 mt-1 flex items-center gap-1">
-              {executive.company ? (
-                <span className="text-slate-700 font-semibold">{executive.company}</span>
-              ) : null}
-            </p>
-
-            <p className="text-[11px] text-slate-400 mt-0.5 uppercase tracking-wide">
+            <p className="text-[11px] text-slate-400 mt-1 uppercase tracking-wide font-medium">
               {coverageLabel.replace("Cobertura: ", "")}
             </p>
+          </div>
+        </div>
+
+        {/* Company Branding Block - Separated to prevent layout shifting */}
+        <div className="mb-4 relative z-10 bg-slate-50/80 rounded-xl p-3 border border-slate-100/80">
+          <div className="flex items-center gap-3 mb-2">
+            {executive.company_logo_url ? (
+              <div className="flex-shrink-0 bg-white border border-slate-100 rounded-lg p-1 h-8 w-8 flex items-center justify-center shadow-sm">
+                <img
+                  src={executive.company_logo_url}
+                  alt={executive.company || "Empresa"}
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+            ) : null}
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs font-bold text-slate-700 leading-none truncate block">
+                {executive.company || "Ejecutiva Independiente"}
+              </span>
+              <span className="text-[10px] text-slate-500 leading-tight mt-0.5">
+                Agente Autorizada
+              </span>
+            </div>
+          </div>
+
+          <div className="text-[10px] text-slate-400 leading-snug border-t border-slate-200/50 pt-2 mt-1">
+            <span className="font-semibold text-slate-500">Nota:</span> Gestiona planes de la compañía. TuEjecutiva.cl es independiente.
           </div>
         </div>
 
@@ -158,7 +181,7 @@ export default function ExecutiveCard({ executive }: ExecutiveCardProps) {
           </p>
         </div>
 
-        <div className="mt-auto flex gap-3 pt-4 border-t border-gray-100 relative z-20">
+        <div className="mt-auto flex gap-3 pt-4 border-t border-gray-100 relative z-20 pointer-events-auto">
           <a
             href={waLink}
             target="_blank"

@@ -85,7 +85,12 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-12 border-t border-gray-100 pt-8">
-          <p className="text-center text-xs text-slate-400">
+          <p className="text-center text-xs text-slate-500 max-w-3xl mx-auto">
+            TuEjecutiva.cl es un directorio informativo. No vende planes ni representa
+            oficialmente a las empresas listadas. Cada ejecutiva es responsable de su
+            relación comercial con la empresa indicada.
+          </p>
+          <p className="text-center text-xs text-slate-400 mt-3">
             © {currentYear} {siteConfig.name}. Todos los derechos reservados.
           </p>
         </div>

@@ -99,6 +99,10 @@ export default async function ServicioDetallePage({
           <p className="mt-6 text-lg leading-8 text-gray-300">
             {category.description}
           </p>
+          <p className="mt-4 text-sm text-emerald-100/90">
+            TuEjecutiva.cl no vende planes ni representa oficialmente a las empresas. Facilitamos
+            el contacto directo con ejecutivas verificadas.
+          </p>
         </div>
       </div>
 

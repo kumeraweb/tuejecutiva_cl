@@ -35,6 +35,10 @@ export default async function ServiciosIndexPage() {
             Encuentra la categoría que buscas y conecta con una ejecutiva
             verificada especializada en el rubro.
           </p>
+          <p className="mt-4 text-sm text-slate-500">
+            TuEjecutiva.cl no vende planes ni representa oficialmente a las empresas.
+            Facilitamos el contacto directo con ejecutivas verificadas.
+          </p>
         </div>
 
         <div className="mx-auto mt-16 max-w-7xl">

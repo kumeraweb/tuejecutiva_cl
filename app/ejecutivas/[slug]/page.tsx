@@ -143,9 +143,26 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
                   {exec.name}
                 </h1>
 
-                <p className="mt-2 text-slate-500 text-sm font-medium uppercase tracking-wide">
-                  {exec.company || "Ejecutiva Independiente"}
-                </p>
+                <div className="mt-4 flex flex-col items-center justify-center p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  {exec.company_logo_url && (
+                    <img
+                      src={exec.company_logo_url}
+                      alt={exec.company || "Empresa"}
+                      className="h-8 object-contain mb-2"
+                    />
+                  )}
+                  <p className="text-slate-700 text-sm font-bold uppercase tracking-wide">
+                    {exec.company || "Ejecutiva Independiente"}
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-medium">Agente Autorizada</p>
+                </div>
+
+                <div className="mt-3 bg-amber-50 rounded-lg p-2.5 border border-amber-100/50">
+                  <p className="text-[10px] text-amber-800/80 leading-snug font-medium">
+                    <span className="font-bold text-amber-900 block mb-0.5">Nota Importante:</span>
+                    La ejecutiva gestiona planes de la empresa indicada. TuEjecutiva.cl es una plataforma independiente y no representa a la compañia.
+                  </p>
+                </div>
 
                 <p className="mt-4 text-emerald-700 bg-emerald-50 rounded-lg py-1.5 px-3 inline-flex items-center gap-2 text-sm font-semibold border border-emerald-100/50">
                   {exec.verified ? "Ejecutiva Verificada" : "Perfil Profesional"}
