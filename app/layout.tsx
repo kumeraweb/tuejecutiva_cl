@@ -97,6 +97,25 @@ export default async function RootLayout({
         {showChrome ? <Header /> : null}
         {children}
         {showChrome ? <Footer /> : null}
+        <Script
+          id="json-ld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "EmploymentAgency",
+              name: "TuEjecutiva.cl",
+              url: "https://tuejecutiva.cl",
+              description:
+                "Directorio de ejecutivas de contratación verificadas. Plataforma independiente de asesoría en Isapres, Seguros y Servicios en Chile.",
+              areaServed: {
+                "@type": "Country",
+                name: "Chile",
+              },
+              priceRange: "$$",
+            }),
+          }}
+        />
       </body>
     </html>
   );
