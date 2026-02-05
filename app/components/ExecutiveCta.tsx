@@ -43,16 +43,16 @@ export default function ExecutiveCta() {
               </p>
               <div className="mt-8 flex gap-x-4 items-center">
                 <a
-                  href="/postular"
+                  href="/soy-ejecutiva"
                   className="rounded-full bg-emerald-500 px-6 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-all transform hover:scale-105"
                 >
-                  Postular ahora
+                  Saber más
                 </a>
                 <a
-                  href="/postular"
+                  href="/planes-ejecutivas"
                   className="text-sm font-semibold leading-6 text-white hover:text-emerald-300"
                 >
-                  Ver beneficios <span aria-hidden="true">→</span>
+                  Ver Planes Premium <span aria-hidden="true">→</span>
                 </a>
               </div>
             </div>

@@ -16,13 +16,13 @@ export default function Hero() {
             </Link>
           </div>
         </div>
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
-          Ejecutivas de contratación <span className="text-emerald-600">verificadas</span>
+        <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl text-balance">
+          Encuentra el plan perfecto con una <span className="text-emerald-600">experta real</span>
         </h1>
-        <p className="mt-6 text-lg leading-8 text-slate-600">
-          No caigas en estafas. Todas las ejecutivas del portal pasan por
-          verificación para confirmar su relación laboral o comercial con las
-          empresas y rubros que representan.
+        <p className="mt-6 text-lg leading-8 text-slate-600 text-pretty">
+          No hables con robots. Contacta ejecutivas verificadas que te orientarán
+          sin estafas, para conseguir el mejor plan de Isapre, Seguros o
+          Servicios.
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <a
