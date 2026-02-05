@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { headers } from "next/headers";
+import Script from "next/script";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -81,6 +82,18 @@ export default async function RootLayout({
       <body
         className={`${inter.className} bg-gray-50 text-slate-900 min-h-full flex flex-col`}
       >
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17932575934"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-17932575934');
+          `}
+        </Script>
         {showChrome ? <Header /> : null}
         {children}
         {showChrome ? <Footer /> : null}
