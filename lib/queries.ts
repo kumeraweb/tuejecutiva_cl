@@ -22,6 +22,7 @@ export interface ExecutiveRecord {
   slug: string;
   phone: string | null;
   company: string | null;
+  company_website_url: string | null;
   experience_years: number | null;
   specialty: string | null;
   description: string | null;
@@ -124,6 +125,7 @@ export async function getExecutives(): Promise<ExecutiveRecord[]> {
     "slug",
     "phone",
     "company",
+    "company_website_url",
     "experience_years",
     "specialty",
     "description",
@@ -142,6 +144,7 @@ export async function getExecutives(): Promise<ExecutiveRecord[]> {
   const { data, error } = await supabase
     .from("executives")
     .select(executivesSelect)
+    .eq("verified", true)
     .order("name", { ascending: true });
 
   if (error) {
@@ -165,6 +168,7 @@ export async function getExecutivesByCategory(slug: string): Promise<ExecutiveRe
     "slug",
     "phone",
     "company",
+    "company_website_url",
     "experience_years",
     "specialty",
     "description",
@@ -196,7 +200,7 @@ export async function getExecutivesByCategory(slug: string): Promise<ExecutiveRe
 
   const executives = (data ?? [])
     .map((row) => (row as { executives?: ExecutiveRecord }).executives)
-    .filter(Boolean) as ExecutiveRecord[];
+    .filter((exec) => Boolean(exec) && (exec as ExecutiveRecord).verified) as ExecutiveRecord[];
 
   const unique = new Map<string, ExecutiveRecord>();
   executives.forEach((executive) => {
@@ -218,6 +222,7 @@ export async function getExecutiveBySlug(slug: string): Promise<ExecutiveRecord 
     "slug",
     "phone",
     "company",
+    "company_website_url",
     "experience_years",
     "specialty",
     "description",
@@ -237,6 +242,7 @@ export async function getExecutiveBySlug(slug: string): Promise<ExecutiveRecord 
     .from("executives")
     .select(executivesSelect)
     .eq("slug", normalizedSlug)
+    .eq("verified", true)
     .maybeSingle();
 
   if (error) {

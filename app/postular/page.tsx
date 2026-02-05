@@ -35,7 +35,7 @@ export default function PostularPage() {
                 <div className="ml-4">
                   <h3 className="font-bold text-slate-900">Sello de Confianza</h3>
                   <p className="text-slate-600 text-sm">
-                    Tu perfil tendrá el badge de verificación oficial, lo que
+                    Tu perfil tendrá el badge de verificación interna de TuEjecutiva.cl, lo que
                     aumenta drásticamente la confianza del cliente.
                   </p>
                 </div>

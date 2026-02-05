@@ -154,7 +154,7 @@ export default function ExecutiveCard({ executive }: ExecutiveCardProps) {
                 {executive.company || "Ejecutiva Independiente"}
               </span>
               <span className="text-[10px] text-slate-500 leading-tight mt-0.5">
-                Agente Autorizada
+                Ejecutiva verificada por TuEjecutiva.cl
               </span>
             </div>
           </div>

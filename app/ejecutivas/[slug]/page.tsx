@@ -30,7 +30,7 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
   const safeSlug = decodeURIComponent(slug).trim();
 
   const executive = await getExecutiveBySlug(safeSlug);
-  if (!executive) {
+  if (!executive || !executive.verified) {
     notFound();
   }
 
@@ -63,6 +63,7 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
   const safeDescription = exec.description || "Sin descripción.";
   const safeSpecialty = exec.specialty || "Sin especialidad";
   const safeCompany = exec.company || "Sin empresa";
+  const companyWebsiteUrl = exec.company_website_url?.trim() || "";
   const experienceLabel =
     exec.experience_years === null || exec.experience_years === undefined
       ? "—"
@@ -154,7 +155,9 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
                   <p className="text-slate-700 text-sm font-bold uppercase tracking-wide">
                     {exec.company || "Ejecutiva Independiente"}
                   </p>
-                  <p className="text-[10px] text-slate-400 font-medium">Agente Autorizada</p>
+                  <p className="text-[10px] text-slate-400 font-medium">
+                    Ejecutiva verificada por TuEjecutiva.cl
+                  </p>
                 </div>
 
                 <div className="mt-3 bg-amber-50 rounded-lg p-2.5 border border-amber-100/50">
@@ -163,6 +166,25 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
                     La ejecutiva gestiona planes de la empresa indicada. TuEjecutiva.cl es una plataforma independiente y no representa a la compañia.
                   </p>
                 </div>
+
+                {companyWebsiteUrl ? (
+                  <div className="mt-4 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-left">
+                    <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                      Sitio oficial de la empresa
+                    </p>
+                    <a
+                      href={companyWebsiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:underline break-all"
+                    >
+                      {companyWebsiteUrl}
+                    </a>
+                    <p className="mt-1 text-[10px] text-slate-500">
+                      Enlace informativo para trazabilidad. TuEjecutiva.cl no representa a la empresa.
+                    </p>
+                  </div>
+                ) : null}
 
                 <p className="mt-4 text-emerald-700 bg-emerald-50 rounded-lg py-1.5 px-3 inline-flex items-center gap-2 text-sm font-semibold border border-emerald-100/50">
                   {exec.verified ? "Ejecutiva Verificada" : "Perfil Profesional"}
@@ -194,13 +216,17 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
                     <span className="block text-2xl font-bold text-slate-900">
                       {experienceLabel}
                     </span>
-                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Años Exp.</span>
+                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Años Exp.
+                    </span>
                   </div>
                   <div className="text-center border-l border-slate-100">
                     <span className="block text-2xl font-bold text-emerald-600">
-                      100%
+                      Verificada
                     </span>
-                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Verificado</span>
+                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      TuEjecutiva.cl
+                    </span>
                   </div>
                 </div>
               </div>
@@ -248,29 +274,31 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
             ) : null}
 
             {/* Digital Certificate Block */}
-            <div className="relative bg-white rounded-2xl p-8 border border-emerald-100 overflow-hidden shadow-sm">
-              <div className="absolute top-0 right-0 -mr-8 -mt-8 opacity-[0.03]">
-                <img src="/images/certification.png" alt="" className="w-64 h-64" />
-              </div>
-
-              <div className="flex items-start gap-4 relative z-10">
-                <div className="flex-shrink-0">
-                  <img src="/images/certification.png" alt="Sello" className="w-16 h-16 object-contain" />
+            {exec.verified ? (
+              <div className="relative bg-white rounded-2xl p-8 border border-emerald-100 overflow-hidden shadow-sm">
+                <div className="absolute top-0 right-0 -mr-8 -mt-8 opacity-[0.03]">
+                  <img src="/images/certification.png" alt="" className="w-64 h-64" />
                 </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 text-lg">Certificado de Verificación</h3>
-                  <p className="text-sm text-slate-500 mb-4">Emitido el {verifiedDateLabel}</p>
 
-                  <div className="bg-emerald-50/50 rounded-xl p-4 border border-emerald-100">
-                    <p className="text-sm text-slate-700 leading-relaxed">
-                      <strong className="text-emerald-700">Identidad Confirmada:</strong> Se ha validado documentos de identidad y antecedentes comerciales.<br />
-                      <strong className="text-emerald-700">Relación Contractual:</strong> Se ha verificado su vínculo con la empresa representante.<br />
-                      <strong className="text-emerald-700">Contacto Real:</strong> WhatsApp y teléfono operativos.
-                    </p>
+                <div className="flex items-start gap-4 relative z-10">
+                  <div className="flex-shrink-0">
+                    <img src="/images/certification.png" alt="Sello" className="w-16 h-16 object-contain" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-lg">Certificado de Verificación</h3>
+                    <p className="text-sm text-slate-500 mb-4">Emitido el {verifiedDateLabel}</p>
+
+                    <div className="bg-emerald-50/50 rounded-xl p-4 border border-emerald-100">
+                      <p className="text-sm text-slate-700 leading-relaxed">
+                        <strong className="text-emerald-700">Identidad Confirmada:</strong> Se ha validado documentos de identidad y antecedentes comerciales.<br />
+                        <strong className="text-emerald-700">Relación Contractual:</strong> Se ha verificado su vínculo con la empresa representante.<br />
+                        <strong className="text-emerald-700">Contacto Real:</strong> WhatsApp y teléfono operativos.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </div>
       </div>

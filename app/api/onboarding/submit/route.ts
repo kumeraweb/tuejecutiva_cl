@@ -8,6 +8,10 @@ import {
   uploadSubmissionFile,
 } from "@/lib/onboarding";
 
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX = 3;
+const rateStore = new Map<string, { count: number; resetAt: number }>();
+
 function getString(value: FormDataEntryValue | null) {
   if (!value || typeof value !== "string") return "";
   return value.trim();
@@ -23,7 +27,33 @@ function getNumber(value: FormDataEntryValue | null) {
   return Number(value);
 }
 
+function getClientIp(request: Request) {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
+  return request.headers.get("x-real-ip") || "unknown";
+}
+
+function isRateLimited(key: string) {
+  const now = Date.now();
+  const entry = rateStore.get(key);
+  if (!entry || entry.resetAt <= now) {
+    rateStore.set(key, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  if (entry.count >= RATE_MAX) return true;
+  entry.count += 1;
+  return false;
+}
+
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  if (isRateLimited(`onboarding:${ip}`)) {
+    return NextResponse.json(
+      { error: "Demasiadas solicitudes. Intenta nuevamente en unos minutos." },
+      { status: 429 }
+    );
+  }
+
   try {
     const formData = await request.formData();
     const mode = getString(formData.get("mode"));
