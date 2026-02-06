@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Script from "next/script";
 import {
   Home,
   ChevronRight,
@@ -28,6 +29,7 @@ interface ExecutiveFaqItem {
 export default async function ExecutiveDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const safeSlug = decodeURIComponent(slug).trim();
+  const shouldTrackConversion = safeSlug === "maria-ines-mora";
 
   const executive = await getExecutiveBySlug(safeSlug);
   if (!executive || !executive.verified) {
@@ -76,6 +78,15 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
 
   return (
     <main className="bg-slate-50 py-12 sm:py-24">
+      {shouldTrackConversion && (
+        <Script id="google-ads-conversion" strategy="afterInteractive">
+          {`gtag('event', 'conversion', {
+            'send_to': 'AW-17932575934/tvp2CJzQ__IbEL7J9eZC',
+            'value': 1.0,
+            'currency': 'CLP'
+          });`}
+        </Script>
+      )}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <nav className="flex mb-8" aria-label="Breadcrumb">
           <ol role="list" className="flex items-center space-x-4">
