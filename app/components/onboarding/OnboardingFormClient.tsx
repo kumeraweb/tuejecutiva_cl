@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { analyzeGuardrails } from "@/lib/contentGuardrails";
 
 interface CategoryOption {
   id: string;
@@ -65,6 +66,7 @@ export default function OnboardingFormClient({
   const [draftLoaded, setDraftLoaded] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [softWarning, setSoftWarning] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const categoryOptions = useMemo(
@@ -173,11 +175,33 @@ export default function OnboardingFormClient({
       nextErrors.accepted_data_use = "Debes aceptar el uso de tus datos.";
     }
 
+    const guardrails = analyzeGuardrails([
+      { field: "full_name", value: draft.full_name },
+      { field: "company", value: draft.company },
+      { field: "custom_category", value: draft.custom_category },
+    ]);
+
+    if (guardrails.hardMatches.length > 0) {
+      const first = guardrails.hardMatches[0];
+      const fieldKey = first.field === "custom_category" ? "category" : first.field;
+      nextErrors[fieldKey] = `El contenido incluye un término no permitido: "${first.term}".`;
+    }
+
     setFieldErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {
       setError("Por favor, revisa los campos marcados antes de continuar.");
+      setSoftWarning(null);
       return null;
     }
+
+    const warningTerms = Array.from(
+      new Set(guardrails.softMatches.map((match) => match.term))
+    );
+    setSoftWarning(
+      warningTerms.length > 0
+        ? `Advertencia de compliance: se detectaron términos sensibles (${warningTerms.join(", ")}). Se revisará manualmente antes de publicación.`
+        : null
+    );
 
     setError(null);
     return {
@@ -234,6 +258,12 @@ export default function OnboardingFormClient({
       const payload = await response.json();
       if (!response.ok) {
         throw new Error(payload?.error || "Error al enviar la postulación.");
+      }
+
+      if (Array.isArray(payload?.warnings) && payload.warnings.length > 0) {
+        setSoftWarning(
+          `Advertencia de compliance: se detectaron términos sensibles (${payload.warnings.join(", ")}). Se revisará manualmente antes de publicación.`
+        );
       }
 
       window.localStorage.removeItem(storageKey);
@@ -379,6 +409,15 @@ export default function OnboardingFormClient({
                 <span className="font-semibold block mb-0.5">Atención</span>
                 {error}
               </div>
+            </div>
+          ) : null}
+
+          {softWarning ? (
+            <div className="mb-8 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5 shrink-0 text-amber-600 mt-0.5">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.72-1.36 3.485 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 10-2 0 1 1 0 002 0zm-1-6a.75.75 0 00-.75.75v3.5a.75.75 0 001.5 0v-3.5A.75.75 0 0010 7z" clipRule="evenodd" />
+              </svg>
+              <div>{softWarning}</div>
             </div>
           ) : null}
 

@@ -10,6 +10,7 @@ interface ExecutiveHeroProps {
     whatsappLink: string;
     companyName: string | null;
     companyLogoUrl: string | null;
+    showNonEmergencyNotice: boolean;
     className?: string;
 }
 
@@ -23,6 +24,7 @@ export default function ExecutiveHero({
     whatsappLink,
     companyName,
     companyLogoUrl,
+    showNonEmergencyNotice,
     className = "",
 }: ExecutiveHeroProps) {
     return (
@@ -70,6 +72,16 @@ export default function ExecutiveHero({
                             </div>
                         ) : null}
 
+                        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-left">
+                            <p className="text-sm font-semibold text-slate-800">
+                                Plataforma independiente de verificación y contacto
+                            </p>
+                            <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+                                TuEjecutiva.cl no vende planes ni representa a la empresa.
+                                La contratación final se realiza directamente con la ejecutiva y su empresa.
+                            </p>
+                        </div>
+
                         <div className="mt-4 flex flex-wrap items-center justify-center sm:justify-start gap-2">
                             {specialty ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
@@ -110,6 +122,17 @@ export default function ExecutiveHero({
                             Cotizar con {name.split(" ")[0]}
                         </a>
                     </div>
+
+                    {showNonEmergencyNotice ? (
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-left">
+                            <p className="text-sm font-medium text-amber-900">
+                                No es un servicio de emergencia.
+                            </p>
+                            <p className="text-sm text-amber-800">
+                                Solo orientación y contratación de planes.
+                            </p>
+                        </div>
+                    ) : null}
                 </div>
             </div>
         </div>

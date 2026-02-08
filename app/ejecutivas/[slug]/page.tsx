@@ -50,6 +50,17 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
     .map((item) => item.categories)
     .filter(Boolean) as Array<NonNullable<ExecutiveCategoryJoin["categories"]>>;
   const category = categories[0] ?? { name: "General", slug: "general" };
+  const showNonEmergencyNotice = categories.some((item) => {
+    const normalizedSlug = item.slug.trim().toLowerCase();
+    const normalizedName = item.name.trim().toLowerCase();
+    return (
+      normalizedSlug === "planes-de-rescate-y-ambulancia" ||
+      normalizedSlug === "planes-de-salud" ||
+      normalizedName.includes("rescate") ||
+      normalizedName.includes("ambulancia") ||
+      normalizedName.includes("salud")
+    );
+  });
 
   const coverageRegions = (exec.executive_regions ?? [])
     .map((item) => item.regions)
@@ -130,6 +141,7 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
           whatsappLink={waLink}
           companyName={exec.company}
           companyLogoUrl={exec.company_logo_url}
+          showNonEmergencyNotice={showNonEmergencyNotice}
         />
 
         {plans.length > 0 && (

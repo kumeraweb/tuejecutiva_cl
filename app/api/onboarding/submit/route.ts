@@ -5,6 +5,7 @@ import {
   isTokenValid,
   markTokenUsed,
 } from "@/lib/onboarding";
+import { analyzeGuardrails } from "@/lib/contentGuardrails";
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_MAX = 3;
@@ -93,6 +94,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Debes seleccionar regiones si no es cobertura nacional." }, { status: 400 });
     }
 
+    const guardrails = analyzeGuardrails([
+      { field: "full_name", value: fullName },
+      { field: "company", value: company },
+      { field: "custom_category", value: customCategory },
+    ]);
+
+    if (guardrails.hardMatches.length > 0) {
+      const first = guardrails.hardMatches[0];
+      return NextResponse.json(
+        {
+          error: `Contenido bloqueado por compliance en ${first.field}: término no permitido "${first.term}".`,
+        },
+        { status: 400 }
+      );
+    }
+
     const submissionId = await createSubmission({
       token_id: tokenId,
       full_name: fullName,
@@ -112,7 +129,11 @@ export async function POST(request: Request) {
       await markTokenUsed(tokenId);
     }
 
-    return NextResponse.json({ success: true, submissionId });
+    const warningTerms = Array.from(
+      new Set(guardrails.softMatches.map((match) => match.term))
+    );
+
+    return NextResponse.json({ success: true, submissionId, warnings: warningTerms });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Error inesperado";
     return NextResponse.json({ error: message }, { status: 500 });

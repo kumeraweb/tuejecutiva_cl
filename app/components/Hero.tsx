@@ -21,7 +21,7 @@ export default function Hero() {
         </h1>
         <p className="mt-6 text-lg leading-8 text-slate-600 text-pretty">
           No hables con robots. Contacta ejecutivas verificadas que te orientarán
-          sin estafas, para conseguir el mejor plan de Isapre, Seguros o
+          con mayor trazabilidad y verificación, para conocer opciones según tu necesidad de Isapre, Seguros o
           Servicios.
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">

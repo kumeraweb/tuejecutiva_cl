@@ -8,6 +8,7 @@ import {
   updateSubmissionStatus,
   type OnboardingStatus,
 } from "@/lib/onboarding";
+import { analyzeGuardrails } from "@/lib/contentGuardrails";
 import CopySqlBlock from "./CopySqlBlock";
 
 export const dynamic = "force-dynamic";
@@ -77,6 +78,21 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
   };
 
   const slug = slugify(submission.full_name);
+  const guardrails = analyzeGuardrails([
+    { field: "full_name", value: submission.full_name || "" },
+    { field: "company", value: submission.company || "" },
+    { field: "specialty", value: submission.specialty || "" },
+    { field: "description", value: submission.description || "" },
+    { field: "whatsapp_message", value: submission.whatsapp_message || "" },
+    { field: "custom_category", value: submission.custom_category || "" },
+    ...categories.map((category, index) => ({
+      field: `category_${index + 1}`,
+      value: category?.name || "",
+    })),
+  ]);
+  const hardBlocked = guardrails.hardMatches.length > 0;
+  const softWarnings = Array.from(new Set(guardrails.softMatches.map((match) => match.term)));
+
   const sql = buildExecutiveSql({
     name: submission.full_name,
     slug,
@@ -131,6 +147,31 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
 
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
+            {hardBlocked ? (
+              <section className="rounded-xl border border-rose-200 bg-rose-50 p-6">
+                <h2 className="text-lg font-semibold text-rose-900">Bloqueo de compliance</h2>
+                <p className="mt-2 text-sm text-rose-800">
+                  Esta postulación contiene términos no permitidos y no debe publicarse hasta corregir el contenido.
+                </p>
+                <ul className="mt-3 list-disc pl-5 text-sm text-rose-800">
+                  {guardrails.hardMatches.map((match, index) => (
+                    <li key={`${match.field}-${match.term}-${index}`}>
+                      {match.field}: &quot;{match.term}&quot;
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {!hardBlocked && softWarnings.length > 0 ? (
+              <section className="rounded-xl border border-amber-200 bg-amber-50 p-6">
+                <h2 className="text-lg font-semibold text-amber-900">Advertencia de compliance</h2>
+                <p className="mt-2 text-sm text-amber-800">
+                  Se detectaron términos sensibles ({softWarnings.join(", ")}). Requiere revisión editorial antes de publicar.
+                </p>
+              </section>
+            ) : null}
+
             <section className="rounded-xl border border-gray-200 bg-white p-6">
               <h2 className="text-lg font-semibold text-slate-900">Datos personales</h2>
               <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 text-sm text-slate-700">
@@ -248,21 +289,27 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
 
             <section className="rounded-xl border border-gray-200 bg-white p-6">
               <h2 className="text-lg font-semibold text-slate-900">Copiar datos</h2>
-              <a
-                href={`/admin/submissions/${submission.id}/copy`}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-3 inline-flex items-center rounded-md bg-emerald-600 px-3 py-2 text-xs font-semibold text-white"
-              >
-                Copiar datos para creación manual
-              </a>
+              {!hardBlocked ? (
+                <a
+                  href={`/admin/submissions/${submission.id}/copy`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 inline-flex items-center rounded-md bg-emerald-600 px-3 py-2 text-xs font-semibold text-white"
+                >
+                  Copiar datos para creación manual
+                </a>
+              ) : (
+                <p className="mt-3 text-xs font-semibold text-rose-700">
+                  Acción bloqueada hasta corregir términos no permitidos.
+                </p>
+              )}
               <textarea
                 readOnly
                 className="mt-3 h-64 w-full rounded-md border border-gray-300 p-3 text-xs"
                 value={JSON.stringify(copyPayload, null, 2)}
               />
             </section>
-            <CopySqlBlock sql={sql} />
+            {!hardBlocked ? <CopySqlBlock sql={sql} /> : null}
           </div>
         </div>
       </div>

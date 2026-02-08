@@ -34,12 +34,15 @@ export default function ExecutiveCompanyInfo({
                     )}
                     <div>
                         {companyName ? (
-                            <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+                            <h4 className="text-base font-bold text-slate-900 uppercase tracking-wide">
                                 {companyName}
                             </h4>
                         ) : null}
-                        <p className="text-xs text-slate-500 max-w-md mt-0.5">
+                        <p className="text-sm text-slate-600 max-w-md mt-0.5">
                             La ejecutiva gestiona planes de esta compañía.
+                        </p>
+                        <p className="mt-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 leading-relaxed">
+                            TuEjecutiva.cl es una plataforma independiente y no representa a la empresa.
                         </p>
                     </div>
                 </div>
@@ -57,11 +60,6 @@ export default function ExecutiveCompanyInfo({
                 )}
             </div>
 
-            <div className="mt-4 pt-4 border-t border-slate-200/60">
-                <p className="text-[10px] text-slate-400 text-center leading-relaxed">
-                    <strong>Aviso Legal:</strong> TuEjecutiva.cl es una plataforma independiente y no representa a la empresa.
-                </p>
-            </div>
         </div>
     );
 }
