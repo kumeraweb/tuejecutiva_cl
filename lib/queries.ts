@@ -38,6 +38,19 @@ export interface ExecutiveRecord {
   executive_regions?: ExecutiveRegionJoin[];
 }
 
+export interface ExecutivePlanRecord {
+  id: string;
+  executive_id: string;
+  name: string;
+  price_from: string | null;
+  target: string | null;
+  description: string | null;
+  features: unknown;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 /**
  * Campos devueltos por la tabla `categories`.
  * - id, slug, name: identificadores y etiquetas visibles.
@@ -250,4 +263,37 @@ export async function getExecutiveBySlug(slug: string): Promise<ExecutiveRecord 
   }
 
   return (data ?? null) as ExecutiveRecord | null;
+}
+
+/**
+ * Planes activos de una ejecutiva ordenados por fecha de creacion.
+ */
+export async function getExecutivePlansByExecutiveId(
+  executiveId: string
+): Promise<ExecutivePlanRecord[]> {
+  const { data, error } = await supabase
+    .from("executive_plans")
+    .select(
+      [
+        "id",
+        "executive_id",
+        "name",
+        "price_from",
+        "target",
+        "description",
+        "features",
+        "active",
+        "created_at",
+        "updated_at",
+      ].join(",")
+    )
+    .eq("executive_id", executiveId)
+    .eq("active", true)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    throw new Error(`getExecutivePlansByExecutiveId failed: ${error.message}`);
+  }
+
+  return (data ?? []) as unknown as ExecutivePlanRecord[];
 }

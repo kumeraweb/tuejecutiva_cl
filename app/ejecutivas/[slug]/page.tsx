@@ -3,27 +3,29 @@ import Script from "next/script";
 import {
   Home,
   ChevronRight,
-  BadgeCheck,
-  MessageCircle,
-  Phone,
+  User,
+  MapPin,
+  Briefcase
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import {
   getExecutiveBySlug,
+  getExecutivePlansByExecutiveId,
   type ExecutiveCategoryJoin,
+  type ExecutivePlanRecord,
   type ExecutiveRegionJoin,
 } from "@/lib/queries";
 import { getExecutivePhotoUrl } from "@/lib/executivePhoto";
+import ExecutiveHero from "@/app/components/executive/ExecutiveHero";
+import ExecutivePlansGrid from "@/app/components/executive/ExecutivePlansGrid";
+import ExecutiveCertificate from "@/app/components/executive/ExecutiveCertificate";
+import ExecutiveCompanyInfo from "@/app/components/executive/ExecutiveCompanyInfo";
+import ExecutiveStickyCTA from "@/app/components/executive/ExecutiveStickyCTA";
 
 export const dynamic = "force-dynamic";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-}
-
-interface ExecutiveFaqItem {
-  question: string;
-  answer: string;
 }
 
 export default async function ExecutiveDetailPage({ params }: PageProps) {
@@ -37,6 +39,12 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
   }
 
   const exec = executive;
+  let plans: ExecutivePlanRecord[] = [];
+  try {
+    plans = await getExecutivePlansByExecutiveId(exec.id);
+  } catch (error) {
+    console.error("Error fetching executive plans", { executiveId: exec.id, error });
+  }
 
   const categories = (exec.executive_categories ?? [])
     .map((item) => item.categories)
@@ -48,36 +56,30 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
     .filter(Boolean) as Array<NonNullable<ExecutiveRegionJoin["regions"]>>;
 
   const coverageLabel = exec.coverage_all
-    ? "Cobertura: Todo Chile"
+    ? "Todo Chile"
     : coverageRegions.length > 0
-      ? `Cobertura: ${coverageRegions.map((region) => region.name).join(", ")}`
-      : "Cobertura: Sin definir";
+      ? coverageRegions.map((region) => region.name).join(", ")
+      : "Sin definir";
 
   const safePhone = exec.phone || "";
-  const safeWhatsapp = exec.whatsapp_message || "";
+  const safeWhatsapp = exec.whatsapp_message || "Hola, vi tu perfil en TuEjecutiva.cl";
   const safePhotoUrl =
     getExecutivePhotoUrl(exec.photo_url) ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(exec.name)}&background=ecfeff&color=155e75&size=200`;
+
   const waLink = safePhone
     ? `https://wa.me/${safePhone}?text=${encodeURIComponent(safeWhatsapp)}`
     : "#";
-  const telLink = safePhone ? `tel:${safePhone}` : "#";
-  const safeDescription = exec.description || "Sin descripción.";
-  const safeSpecialty = exec.specialty || "Sin especialidad";
-  const safeCompany = exec.company || "Sin empresa";
-  const companyWebsiteUrl = exec.company_website_url?.trim() || "";
-  const experienceLabel =
-    exec.experience_years === null || exec.experience_years === undefined
-      ? "—"
-      : exec.experience_years;
-  const verifiedDateLabel = exec.verified_date || "sin fecha";
-
-  const faq = Array.isArray(exec.faq)
-    ? (exec.faq as ExecutiveFaqItem[])
-    : [];
+  const safeDescription = exec.description?.trim() || null;
+  const safeSpecialty = exec.specialty?.trim() || null;
+  const experienceLabel = exec.experience_years !== null && exec.experience_years !== undefined
+    ? `${exec.experience_years} Años`
+    : null;
+  const verifiedDateLabel = exec.verified_date || "Reciente";
 
   return (
-    <main className="bg-slate-50 py-12 sm:py-24">
+    <main className="bg-slate-50 flex-1 pb-24 sm:pb-32">
+      {/* Conversion Tracking */}
       {shouldTrackConversion && (
         <Script id="google-ads-conversion" strategy="afterInteractive">
           {`gtag('event', 'conversion', {
@@ -87,232 +89,137 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
           });`}
         </Script>
       )}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <nav className="flex mb-8" aria-label="Breadcrumb">
-          <ol role="list" className="flex items-center space-x-4">
-            <li>
-              <div>
+
+      {/* Breadcrumb */}
+      <div className="bg-white border-b border-slate-100">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+          <nav className="flex" aria-label="Breadcrumb">
+            <ol role="list" className="flex items-center space-x-2">
+              <li>
                 <Link href="/" className="text-slate-400 hover:text-slate-500">
                   <span className="sr-only">Home</span>
-                  <Home className="h-5 w-5 flex-shrink-0" />
+                  <Home className="h-4 w-4" />
                 </Link>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <ChevronRight className="h-5 w-5 flex-shrink-0 text-slate-300" />
+              </li>
+              <ChevronRight className="h-4 w-4 text-slate-300" />
+              <li>
                 <Link
                   href={`/servicios/${category.slug}`}
-                  className="ml-4 text-sm font-medium text-slate-500 hover:text-slate-700"
+                  className="text-xs font-medium text-slate-500 hover:text-slate-700"
                 >
                   {category.name}
                 </Link>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <ChevronRight className="h-5 w-5 flex-shrink-0 text-slate-300" />
-                <span
-                  className="ml-4 text-sm font-medium text-slate-700"
-                  aria-current="page"
-                >
+              </li>
+              <ChevronRight className="h-4 w-4 text-slate-300" />
+              <li>
+                <span className="text-xs font-medium text-slate-900" aria-current="page">
                   {exec.name}
                 </span>
-              </div>
-            </li>
-          </ol>
-        </nav>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Sidebar / Digital Credential */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-xl ring-1 ring-gray-900/5 overflow-hidden sticky top-24 relative">
-              {/* Decorative Top Bar */}
-              <div className="h-2 w-full bg-gradient-to-r from-emerald-500 to-emerald-400" />
-
-              <div className="p-8 text-center relative z-10">
-                {/* Seal Watermark */}
-                {exec.verified && (
-                  <div className="absolute top-4 right-4 opacity-5 pointer-events-none">
-                    <img src="/images/certification.png" alt="" className="w-32 h-32" />
-                  </div>
-                )}
-
-                <div className="relative inline-block mx-auto">
-                  <img
-                    className="h-32 w-32 rounded-full object-cover ring-4 ring-white shadow-lg mx-auto"
-                    src={safePhotoUrl}
-                    alt={exec.name}
-                  />
-                  {exec.verified && (
-                    <div className="absolute bottom-1 right-1 bg-white rounded-full p-1 shadow-md" title="Verificada">
-                      <img src="/images/certification.png" alt="Verificada" className="w-8 h-8" />
-                    </div>
-                  )}
-                </div>
-
-                <h1 className="mt-6 text-2xl font-bold tracking-tight text-slate-900 leading-tight">
-                  {exec.name}
-                </h1>
-
-                <div className="mt-4 flex flex-col items-center justify-center p-3 bg-slate-50 rounded-xl border border-slate-100">
-                  {exec.company_logo_url && (
-                    <img
-                      src={exec.company_logo_url}
-                      alt={exec.company || "Empresa"}
-                      className="h-8 object-contain mb-2"
-                    />
-                  )}
-                  <p className="text-slate-700 text-sm font-bold uppercase tracking-wide">
-                    {exec.company || "Ejecutiva Independiente"}
-                  </p>
-                  <p className="text-[10px] text-slate-400 font-medium">
-                    Ejecutiva verificada por TuEjecutiva.cl
-                  </p>
-                </div>
-
-                <div className="mt-3 bg-amber-50 rounded-lg p-2.5 border border-amber-100/50">
-                  <p className="text-[10px] text-amber-800/80 leading-snug font-medium">
-                    <span className="font-bold text-amber-900 block mb-0.5">Nota Importante:</span>
-                    La ejecutiva gestiona planes de la empresa indicada. TuEjecutiva.cl es una plataforma independiente y no representa a la compañia.
-                  </p>
-                </div>
-
-                {companyWebsiteUrl ? (
-                  <div className="mt-4 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-left">
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                      Sitio oficial de la empresa
-                    </p>
-                    <a
-                      href={companyWebsiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:underline break-all"
-                    >
-                      {companyWebsiteUrl}
-                    </a>
-                    <p className="mt-1 text-[10px] text-slate-500">
-                      Enlace informativo para trazabilidad. TuEjecutiva.cl no representa a la empresa.
-                    </p>
-                  </div>
-                ) : null}
-
-                <p className="mt-4 text-emerald-700 bg-emerald-50 rounded-lg py-1.5 px-3 inline-flex items-center gap-2 text-sm font-semibold border border-emerald-100/50">
-                  {exec.verified ? "Ejecutiva Verificada" : "Perfil Profesional"}
-                </p>
-
-                <p className="mt-4 text-slate-500 text-sm">{coverageLabel}</p>
-
-                <div className="mt-8 flex flex-col gap-3">
-                  <a
-                    href={waLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full rounded-lg bg-emerald-600 px-3.5 py-3 text-center text-sm font-bold text-white shadow-sm hover:bg-emerald-500 hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
-                  >
-                    <MessageCircle className="h-5 w-5" />
-                    WhatsApp Directo
-                  </a>
-                  <a
-                    href={telLink}
-                    className="w-full rounded-lg bg-white px-3.5 py-3 text-center text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <Phone className="h-4 w-4" />
-                    Llamar
-                  </a>
-                </div>
-
-                <div className="mt-8 grid grid-cols-2 gap-4 pt-6 border-t border-slate-100">
-                  <div className="text-center">
-                    <span className="block text-2xl font-bold text-slate-900">
-                      {experienceLabel}
-                    </span>
-                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                      Años Exp.
-                    </span>
-                  </div>
-                  <div className="text-center border-l border-slate-100">
-                    <span className="block text-2xl font-bold text-emerald-600">
-                      Verificada
-                    </span>
-                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                      TuEjecutiva.cl
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-900/5 p-8 sm:p-10">
-              <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                <span className="h-6 w-1 bg-emerald-500 rounded-full" />
-                Sobre mi servicio
-              </h2>
-              <div className="prose prose-slate max-w-none">
-                <p className="text-slate-600 leading-relaxed whitespace-pre-line text-lg">
-                  {safeDescription}
-                </p>
-              </div>
-
-              <div className="mt-8 pt-8 border-t border-slate-100">
-                <h3 className="text-sm font-semibold text-slate-900 mb-3 uppercase tracking-wide">
-                  Especialidad
-                </h3>
-                <span className="inline-flex items-center rounded-md bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/10">
-                  {safeSpecialty}
-                </span>
-              </div>
-            </div>
-
-            {faq.length > 0 ? (
-              <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-900/5 p-8 sm:p-10 text-pretty">
-                <h2 className="text-xl font-bold text-slate-900 mb-8">
-                  Preguntas Frecuentes
-                </h2>
-                <dl className="space-y-8">
-                  {faq.map((item, index) => (
-                    <div key={`${item.question}-${index}`} className="group">
-                      <dt className="font-semibold text-slate-900 text-base group-hover:text-emerald-700 transition-colors">
-                        {item.question}
-                      </dt>
-                      <dd className="mt-3 text-slate-600 leading-relaxed">{item.answer}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            ) : null}
-
-            {/* Digital Certificate Block */}
-            {exec.verified ? (
-              <div className="relative bg-white rounded-2xl p-8 border border-emerald-100 overflow-hidden shadow-sm">
-                <div className="absolute top-0 right-0 -mr-8 -mt-8 opacity-[0.03]">
-                  <img src="/images/certification.png" alt="" className="w-64 h-64" />
-                </div>
-
-                <div className="flex items-start gap-4 relative z-10">
-                  <div className="flex-shrink-0">
-                    <img src="/images/certification.png" alt="Sello" className="w-16 h-16 object-contain" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-lg">Certificado de Verificación</h3>
-                    <p className="text-sm text-slate-500 mb-4">Emitido el {verifiedDateLabel}</p>
-
-                    <div className="bg-emerald-50/50 rounded-xl p-4 border border-emerald-100">
-                      <p className="text-sm text-slate-700 leading-relaxed">
-                        <strong className="text-emerald-700">Identidad Confirmada:</strong> Se ha validado documentos de identidad y antecedentes comerciales.<br />
-                        <strong className="text-emerald-700">Relación Contractual:</strong> Se ha verificado su vínculo con la empresa representante.<br />
-                        <strong className="text-emerald-700">Contacto Real:</strong> WhatsApp y teléfono operativos.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : null}
-          </div>
+              </li>
+            </ol>
+          </nav>
         </div>
       </div>
+
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8 sm:space-y-12">
+        {/* 1. Hero Section */}
+        <ExecutiveHero
+          name={exec.name}
+          specialty={safeSpecialty}
+          description={safeDescription}
+          experienceYears={exec.experience_years ?? null}
+          photoUrl={safePhotoUrl}
+          verified={exec.verified}
+          whatsappLink={waLink}
+          companyName={exec.company}
+          companyLogoUrl={exec.company_logo_url}
+        />
+
+        {/* 2. Plans Section (Conditional) */}
+        {plans.length > 0 && (
+          <ExecutivePlansGrid plans={plans} whatsappLink={waLink} />
+        )}
+
+        {/* 3. Certificate Section */}
+        <ExecutiveCertificate verifiedDate={verifiedDateLabel} />
+
+        {/* 4. Executive Details & Bio */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="md:col-span-2 space-y-8">
+            {safeDescription ? (
+              <div>
+                <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                  <User className="w-5 h-5 text-emerald-600" />
+                  Sobre mi servicio
+                </h2>
+                <div className="prose prose-slate prose-sm sm:prose-base max-w-none text-slate-600 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                  <p className="whitespace-pre-line leading-relaxed">
+                    {safeDescription}
+                  </p>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex items-start gap-4">
+                <div className="bg-emerald-50 p-2.5 rounded-lg">
+                  <MapPin className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Cobertura</span>
+                  <span className="text-sm font-semibold text-slate-700">{coverageLabel}</span>
+                </div>
+              </div>
+              {experienceLabel ? (
+                <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex items-start gap-4">
+                  <div className="bg-emerald-50 p-2.5 rounded-lg">
+                    <Briefcase className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div>
+                    <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Experiencia</span>
+                    <span className="text-sm font-semibold text-slate-700">{experienceLabel}</span>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="md:col-span-1">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 sticky top-24">
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4">
+                Contacto Rápido
+              </h3>
+              <div className="space-y-4">
+                <p className="text-sm text-slate-500">
+                  ¿Tienes dudas? Cotiza directamente sin compromiso.
+                </p>
+                <a
+                  href={waLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all shadow-sm hover:translate-y-px"
+                >
+                  Contactar por WhatsApp
+                </a>
+                <p className="text-[10px] text-center text-slate-400">
+                  Respuesta promedio: Menos de 1 hora
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 5. Company Info */}
+        <ExecutiveCompanyInfo
+          companyName={exec.company}
+          companyLogoUrl={exec.company_logo_url}
+          companyWebsiteUrl={exec.company_website_url}
+        />
+
+      </div>
+
+      {/* Mobile Sticky CTA */}
+      <ExecutiveStickyCTA whatsappLink={waLink} name={exec.name} />
     </main>
   );
 }
