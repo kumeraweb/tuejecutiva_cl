@@ -99,6 +99,21 @@ export default function OnboardingFormClient({
     window.localStorage.setItem(storageKey, JSON.stringify(draft));
   }, [draft, draftLoaded, storageKey]);
 
+  useEffect(() => {
+    if (mode !== "token") return;
+
+    function handlePageShow(event: PageTransitionEvent) {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    }
+
+    window.addEventListener("pageshow", handlePageShow);
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow);
+    };
+  }, [mode]);
+
   function updateField<K extends keyof DraftState>(name: K, value: DraftState[K]) {
     setDraft((prev) => ({ ...prev, [name]: value }));
     // Clear field specific error when user types
