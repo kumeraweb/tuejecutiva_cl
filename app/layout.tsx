@@ -13,7 +13,6 @@ const inter = Inter({
 const defaultTitle = "TuEjecutiva";
 const defaultDescription =
   "Portal de confianza que conecta usuarios con ejecutivas de contratacion verificadas en Chile. Evita estafas y contacta profesionales validadas.";
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
@@ -73,9 +72,10 @@ export default async function RootLayout({
 }>) {
   const requestHeaders = await headers();
   const pathname = requestHeaders.get("x-pathname") || "";
+  const isAdmin = pathname.startsWith("/admin");
   const isOnboarding = pathname.startsWith("/onboarding");
   const isOnboardingDev = pathname.startsWith("/onboarding/dev");
-  const showChrome = !(isOnboarding && !isOnboardingDev);
+  const showChrome = !(isAdmin || (isOnboarding && !isOnboardingDev));
 
   return (
     <html lang="es" className="h-full antialiased scroll-smooth">

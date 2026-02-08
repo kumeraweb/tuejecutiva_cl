@@ -4,8 +4,6 @@ import {
   getTokenByValue,
   isTokenValid,
   markTokenUsed,
-  uploadSubmissionPhoto,
-  uploadSubmissionFile,
 } from "@/lib/onboarding";
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
@@ -20,11 +18,6 @@ function getString(value: FormDataEntryValue | null) {
 function getBoolean(value: FormDataEntryValue | null) {
   if (!value || typeof value !== "string") return false;
   return value === "true" || value === "on";
-}
-
-function getNumber(value: FormDataEntryValue | null) {
-  if (!value || typeof value !== "string") return NaN;
-  return Number(value);
 }
 
 function getClientIp(request: Request) {
@@ -73,54 +66,32 @@ export async function POST(request: Request) {
     const email = getString(formData.get("email"));
     const phone = getString(formData.get("phone"));
     const company = getString(formData.get("company"));
-    const experienceYears = getNumber(formData.get("experience_years"));
-    const specialty = getString(formData.get("specialty"));
-    const description = getString(formData.get("description"));
-    const whatsappMessage = getString(formData.get("whatsapp_message"));
+    const categoryId = getString(formData.get("category_id"));
     const coverageAll = getBoolean(formData.get("coverage_all"));
     const customCategory = getString(formData.get("custom_category"));
     const acceptedTerms = getBoolean(formData.get("accepted_terms"));
     const acceptedDataUse = getBoolean(formData.get("accepted_data_use"));
 
-    const categoryIds = formData.getAll("category_ids").filter((value) => typeof value === "string") as string[];
     const regionIds = formData.getAll("region_ids").filter((value) => typeof value === "string") as string[];
 
-    if (!fullName || !phone || !company || !specialty || !description) {
+    if (!fullName || !email || !phone || !company) {
       return NextResponse.json({ error: "Faltan campos obligatorios." }, { status: 400 });
     }
 
-    if (!Number.isFinite(experienceYears)) {
-      return NextResponse.json({ error: "Experience years inválido." }, { status: 400 });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: "Email inválido." }, { status: 400 });
     }
 
     if (!acceptedTerms || !acceptedDataUse) {
       return NextResponse.json({ error: "Debes aceptar términos y uso de datos." }, { status: 400 });
     }
 
-    if (categoryIds.length === 0 && !customCategory) {
+    if (!categoryId && !customCategory) {
       return NextResponse.json({ error: "Debes seleccionar una categoría o escribir una categoría libre." }, { status: 400 });
     }
 
     if (!coverageAll && regionIds.length === 0) {
       return NextResponse.json({ error: "Debes seleccionar regiones si no es cobertura nacional." }, { status: 400 });
-    }
-
-    const files = formData.getAll("supporting_files");
-    const validFiles = files.filter((item): item is File => item instanceof File && item.size > 0);
-    if (validFiles.length === 0) {
-      return NextResponse.json({ error: "Debes adjuntar al menos un archivo." }, { status: 400 });
-    }
-    for (const file of validFiles) {
-      if (!["application/pdf", "image/jpeg", "image/png"].includes(file.type)) {
-        return NextResponse.json({ error: "Formato de archivo no permitido." }, { status: 400 });
-      }
-    }
-
-    const photoFileEntry = formData.get("photo_file");
-    const photoFile =
-      photoFileEntry instanceof File && photoFileEntry.size > 0 ? photoFileEntry : null;
-    if (photoFile && !["image/jpeg", "image/png", "image/webp"].includes(photoFile.type)) {
-      return NextResponse.json({ error: "Formato de foto no permitido." }, { status: 400 });
     }
 
     const submissionId = await createSubmission({
@@ -129,28 +100,14 @@ export async function POST(request: Request) {
       email,
       phone,
       company,
-      experience_years: experienceYears,
-      specialty,
-      description,
-      whatsapp_message: whatsappMessage || null,
       coverage_all: coverageAll,
       custom_category: customCategory || null,
       accepted_terms: acceptedTerms,
       accepted_data_use: acceptedDataUse,
       status: "pending",
-      category_ids: categoryIds,
+      category_id: categoryId || null,
       region_ids: coverageAll ? [] : regionIds,
     });
-    for (const file of validFiles) {
-      await uploadSubmissionFile({
-        submissionId,
-        file,
-        fileType: "other",
-      });
-    }
-    if (photoFile) {
-      await uploadSubmissionPhoto({ submissionId, file: photoFile });
-    }
 
     if (tokenId && mode !== "dev") {
       await markTokenUsed(tokenId);

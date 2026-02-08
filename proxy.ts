@@ -1,55 +1,72 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import {
+  ADMIN_ACCESS_COOKIE,
+  ADMIN_REFRESH_COOKIE,
+  clearAdminSessionCookies,
+  getAdminFromTokens,
+  writeAdminSessionCookies,
+} from "@/lib/adminAuth";
 
-const ADMIN_COOKIE = "admin_secret";
-const ADMIN_ENABLED = process.env.ADMIN_ENABLED === "true";
-
-function hasValidSecret(request: NextRequest, adminSecret: string) {
-  const headerSecret = request.headers.get("x-admin-secret");
-  const cookieSecret = request.cookies.get(ADMIN_COOKIE)?.value;
-
-  if (headerSecret === adminSecret || cookieSecret === adminSecret) {
-    return { authorized: true, response: null as NextResponse | null };
-  }
-
-  if (process.env.NODE_ENV !== "production") {
-    const querySecret = request.nextUrl.searchParams.get("admin");
-    if (querySecret === adminSecret) {
-      const response = NextResponse.next();
-      response.cookies.set(ADMIN_COOKIE, adminSecret, {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: false,
-      });
-      return { authorized: true, response };
-    }
-  }
-
-  return { authorized: false, response: null as NextResponse | null };
+function getUnauthorizedApiResponse() {
+  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 }
 
-export function proxy(request: NextRequest) {
-  // Admin protection: requires ADMIN_SECRET via header/cookie; in dev it can be seeded via ?admin=SECRET.
-  const adminSecret = process.env.ADMIN_SECRET;
+function buildAdminLoginRedirect(request: NextRequest) {
+  const loginUrl = request.nextUrl.clone();
+  loginUrl.pathname = "/admin/login";
+  loginUrl.searchParams.set("next", request.nextUrl.pathname);
+  return NextResponse.redirect(loginUrl, { status: 307 });
+}
 
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const isAdminPage = pathname.startsWith("/admin");
+  const isAdminApi = pathname.startsWith("/api/admin");
+  const isAdminLogin = pathname === "/admin/login";
+  const isProtectedAdminPath = isAdminPage || isAdminApi;
 
-  if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
-    if (!ADMIN_ENABLED) {
-      return new NextResponse("Not Found", { status: 404 });
+  if (isProtectedAdminPath) {
+    const accessToken = request.cookies.get(ADMIN_ACCESS_COOKIE)?.value;
+    const refreshToken = request.cookies.get(ADMIN_REFRESH_COOKIE)?.value;
+    const { isAdmin, session } = await getAdminFromTokens({
+      accessToken,
+      refreshToken,
+    });
+
+    if (isAdminLogin) {
+      if (isAdmin) {
+        const response = NextResponse.redirect(new URL("/admin", request.url), {
+          status: 307,
+        });
+        if (session) {
+          writeAdminSessionCookies(response.cookies, session);
+        }
+        response.headers.set("x-pathname", pathname);
+        return response;
+      }
+
+      const response = NextResponse.next();
+      response.headers.set("x-pathname", pathname);
+      return response;
     }
 
-    if (!adminSecret) {
-      return new NextResponse("Forbidden", { status: 403 });
+    if (!isAdmin) {
+      if (isAdminApi) {
+        const response = getUnauthorizedApiResponse();
+        clearAdminSessionCookies(response.cookies);
+        return response;
+      }
+
+      const response = buildAdminLoginRedirect(request);
+      clearAdminSessionCookies(response.cookies);
+      return response;
     }
 
-    const { authorized, response } = hasValidSecret(request, adminSecret);
-    if (!authorized) {
-      return new NextResponse("Forbidden", { status: 403 });
+    const nextResponse = NextResponse.next();
+    if (session) {
+      writeAdminSessionCookies(nextResponse.cookies, session);
     }
-
-    const nextResponse = response ?? NextResponse.next();
     nextResponse.headers.set("x-pathname", pathname);
     return nextResponse;
   }

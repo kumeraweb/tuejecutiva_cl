@@ -261,19 +261,15 @@ export async function createSubmission(payload: {
   email: string;
   phone: string;
   company: string;
-  experience_years: number;
-  specialty: string;
-  description: string;
-  whatsapp_message?: string | null;
   coverage_all: boolean;
   custom_category?: string | null;
   accepted_terms: boolean;
   accepted_data_use: boolean;
   status: OnboardingStatus;
-  category_ids: string[];
+  category_id?: string | null;
   region_ids: string[];
 }) {
-  const { category_ids, region_ids, ...submissionData } = payload;
+  const { category_id, region_ids, ...submissionData } = payload;
 
   const { data: submission, error } = await supabaseAdmin
     .from("onboarding_submissions")
@@ -287,15 +283,13 @@ export async function createSubmission(payload: {
 
   const submissionId = submission.id as string;
 
-  if (category_ids.length > 0) {
+  if (category_id) {
     const { error: categoriesError } = await supabaseAdmin
       .from("onboarding_submission_categories")
-      .insert(
-        category_ids.map((categoryId) => ({
-          submission_id: submissionId,
-          category_id: categoryId,
-        }))
-      );
+      .insert({
+        submission_id: submissionId,
+        category_id: category_id,
+      });
 
     if (categoriesError) {
       throw new Error(`createSubmission categories failed: ${categoriesError.message}`);
@@ -329,80 +323,6 @@ export async function markTokenUsed(tokenId: string) {
   if (error) {
     throw new Error(`markTokenUsed failed: ${error.message}`);
   }
-}
-
-export async function uploadSubmissionFile(params: {
-  submissionId: string;
-  file: File;
-  fileType: "contract" | "identity" | "other";
-}) {
-  const { submissionId, file, fileType } = params;
-  const fileExt = file.name.split(".").pop() || "bin";
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const path = `submissions/${submissionId}/${fileType}-${Date.now()}-${safeName}`;
-
-  const arrayBuffer = await file.arrayBuffer();
-  const { error: uploadError } = await supabaseAdmin.storage
-    .from("onboarding-documents")
-    .upload(path, arrayBuffer, {
-      contentType: file.type || "application/octet-stream",
-      upsert: false,
-    });
-
-  if (uploadError) {
-    throw new Error(`uploadSubmissionFile failed: ${uploadError.message}`);
-  }
-
-  const { error: insertError } = await supabaseAdmin
-    .from("onboarding_submission_files")
-    .insert({
-      submission_id: submissionId,
-      file_type: fileType,
-      file_path: path,
-      file_name: file.name,
-      mime_type: file.type || "application/octet-stream",
-    });
-
-  if (insertError) {
-    throw new Error(`uploadSubmissionFile insert failed: ${insertError.message}`);
-  }
-
-  return path;
-}
-
-export async function uploadSubmissionPhoto(params: {
-  submissionId: string;
-  file: File;
-}) {
-  const { submissionId, file } = params;
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const path = `photos/${submissionId}/profile-${Date.now()}-${safeName}`;
-
-  const arrayBuffer = await file.arrayBuffer();
-  const { error: uploadError } = await supabaseAdmin.storage
-    .from("executive-photos")
-    .upload(path, arrayBuffer, {
-      contentType: file.type || "application/octet-stream",
-      upsert: false,
-    });
-
-  if (uploadError) {
-    throw new Error(`uploadSubmissionPhoto failed: ${uploadError.message}`);
-  }
-
-  const { error: insertError } = await supabaseAdmin
-    .from("onboarding_submission_photos")
-    .insert({
-      submission_id: submissionId,
-      photo_path: path,
-      mime_type: file.type || "application/octet-stream",
-    });
-
-  if (insertError) {
-    throw new Error(`uploadSubmissionPhoto insert failed: ${insertError.message}`);
-  }
-
-  return path;
 }
 
 export async function createSignedFileUrl(path: string) {
