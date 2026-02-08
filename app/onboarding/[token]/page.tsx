@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { unstable_noStore as noStore } from "next/cache";
 import OnboardingFormClient from "@/app/components/onboarding/OnboardingFormClient";
 import {
   getCategoriesForOnboarding,
@@ -8,17 +9,20 @@ import {
 } from "@/lib/onboarding";
 
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 interface PageProps {
   params: Promise<{ token: string }>;
 }
 
 export default async function OnboardingTokenPage({ params }: PageProps) {
+  noStore();
+
   const { token } = await params;
   const safeToken = decodeURIComponent(token).trim();
 
   const tokenRecord = await getTokenByValue(safeToken);
-  if (!isTokenValid(tokenRecord)) {
+  if (!tokenRecord || tokenRecord.used_at !== null || !isTokenValid(tokenRecord)) {
     notFound();
   }
 
@@ -28,8 +32,8 @@ export default async function OnboardingTokenPage({ params }: PageProps) {
   ]);
 
   return (
-    <main className="bg-slate-50 px-6 py-16 lg:px-8">
-      <div className="mx-auto max-w-3xl">
+    <main className="min-h-screen bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-2xl">
         <OnboardingFormClient
           categories={categories}
           regions={regions}
