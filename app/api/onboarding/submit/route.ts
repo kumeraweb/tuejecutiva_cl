@@ -49,7 +49,6 @@ export async function POST(request: Request) {
 
   try {
     const formData = await request.formData();
-    const mode = getString(formData.get("mode"));
     const tokenValue = getString(formData.get("token"));
 
     let tokenId: string | null = null;
@@ -109,7 +108,7 @@ export async function POST(request: Request) {
       region_ids: coverageAll ? [] : regionIds,
     });
 
-    if (tokenId && mode !== "dev") {
+    if (tokenId) {
       await markTokenUsed(tokenId);
     }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 
 interface CategoryOption {
@@ -60,7 +60,6 @@ export default function OnboardingFormClient({
   token,
   mode,
 }: OnboardingFormClientProps) {
-  const router = useRouter();
   const [stage, setStage] = useState<OnboardingStage>("welcome");
   const [draft, setDraft] = useState<DraftState>(EMPTY_DRAFT);
   const [draftLoaded, setDraftLoaded] = useState(false);
@@ -255,73 +254,94 @@ export default function OnboardingFormClient({
 
   if (stage === "welcome") {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center text-center animate-in fade-in duration-700 slide-in-from-bottom-4">
-        <div className="mb-8 p-4">
+      <div className="relative flex min-h-[80vh] flex-col items-center justify-center text-center overflow-hidden">
+        {/* Background Decorative Element */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.03] z-0 select-none">
           <Image
-            src="/logo/logonbg.png"
-            alt="TuEjecutiva.cl Logo"
-            width={240}
-            height={80}
-            className="h-auto w-48 opacity-90 sm:w-64"
+            src="/images/certification.png"
+            alt="Sello de Certificación"
+            width={600}
+            height={600}
+            className="h-[120%] w-auto max-w-none object-contain blur-[1px]"
             priority
           />
         </div>
 
-        <h1 className="mb-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-          Estamos muy felices de que <br className="hidden sm:block" />
-          seas parte de <span className="text-emerald-600">TuEjecutiva.cl</span>
-        </h1>
+        <div className="relative z-10 flex flex-col items-center px-4">
+          <div className="mb-10 animate-in fade-in zoom-in duration-1000">
+            <Image
+              src="/logo/logonbg.png"
+              alt="TuEjecutiva.cl Logo"
+              width={260}
+              height={90}
+              className="h-auto w-52 sm:w-72"
+              priority
+            />
+          </div>
 
-        <p className="mx-auto mb-10 max-w-lg text-lg text-slate-600">
-          A continuación te pediremos algunos datos para tu perfil.
-          Son simples, tómate tu tiempo. Nuestro equipo revisará tu postulación
-          de forma manual para asegurar la calidad de nuestra red.
-        </p>
+          <h1 className="mb-6 max-w-2xl text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl animate-in slide-in-from-bottom-4 fade-in duration-1000 delay-150 fill-mode-both">
+            Bienvenida a la red <br />
+            <span className="text-emerald-600">profesional líder</span>
+          </h1>
 
-        <button
-          onClick={() => setStage("form")}
-          className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-slate-900 px-8 py-3 font-medium text-white shadow-lg transition duration-300 hover:bg-slate-800 hover:shadow-xl hover:-translate-y-0.5"
-        >
-          <span className="relative">Comenzar postulación</span>
-        </button>
+          <p className="mx-auto mb-12 max-w-lg text-lg text-slate-600 sm:text-xl leading-relaxed animate-in slide-in-from-bottom-4 fade-in duration-1000 delay-300 fill-mode-both">
+            Estás a un paso de potenciar tu carrera. <br className="hidden sm:block" />
+            Completa tu perfil para ser verificada.
+          </p>
+
+          <button
+            onClick={() => setStage("form")}
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-slate-900 px-10 py-4 text-base font-semibold text-white shadow-xl transition-all duration-300 hover:bg-slate-800 hover:shadow-2xl hover:-translate-y-1 animate-in slide-in-from-bottom-4 fade-in duration-1000 delay-500 fill-mode-both"
+          >
+            <span className="relative z-20">Comenzar postulación</span>
+            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-emerald-600 to-teal-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          </button>
+
+          <p className="mt-8 text-xs text-slate-400 font-medium tracking-wide uppercase animate-in fade-in duration-1000 delay-700 fill-mode-both">
+            Proceso de postulación manual y selectivo
+          </p>
+        </div>
       </div>
     );
   }
 
   if (stage === "success") {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center text-center animate-in fade-in duration-700 slide-in-from-bottom-4">
-        <div className="mb-8 p-4">
+      <div className="relative flex min-h-[70vh] flex-col items-center justify-center text-center overflow-hidden">
+        {/* Background Decorative Element */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.04] z-0 select-none">
           <Image
-            src="/logo/logonbg.png"
-            alt="TuEjecutiva.cl Logo"
-            width={180}
-            height={60}
-            className="h-auto w-40 opacity-90 grayscale-[0.2]"
+            src="/images/certification.png"
+            alt="Sello de Certificación"
+            width={500}
+            height={500}
+            className="h-[100%] w-auto max-w-none object-contain"
           />
         </div>
 
-        <div className="mb-6 rounded-full bg-emerald-100 p-3 text-emerald-600">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-8 w-8">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-          </svg>
+        <div className="relative z-10 px-4">
+          <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-lg ring-4 ring-white animate-in zoom-in spin-in-12 duration-700">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="h-10 w-10">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+
+          <h1 className="mb-4 text-3xl font-bold text-slate-900 sm:text-4xl animate-in slide-in-from-bottom-3 fade-in duration-700 delay-150 fill-mode-both">
+            ¡Postulación recibida!
+          </h1>
+
+          <p className="mx-auto mb-10 max-w-md text-lg text-slate-600 leading-relaxed animate-in slide-in-from-bottom-3 fade-in duration-700 delay-300 fill-mode-both">
+            Hemos recibido tus datos correctamente. <br />
+            Nuestro equipo de selección revisará tu perfil y te contactará a la brevedad.
+          </p>
+
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-8 py-3 text-sm font-semibold text-slate-700 shadow-md transition-all hover:bg-slate-50 hover:text-slate-900 hover:shadow-lg animate-in fade-in duration-1000 delay-500 fill-mode-both"
+          >
+            Volver al inicio
+          </Link>
         </div>
-
-        <h1 className="mb-3 text-3xl font-bold text-slate-900">
-          ¡Postulación recibida!
-        </h1>
-
-        <p className="mx-auto mb-8 max-w-md text-lg text-slate-600">
-          Gracias por confiar en TuEjecutiva.cl.
-          Nuestro equipo revisará tu información y se pondrá en contacto contigo a la brevedad.
-        </p>
-
-        <a
-          href="/"
-          className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-colors"
-        >
-          Ir al inicio
-        </a>
       </div>
     );
   }
@@ -329,23 +349,23 @@ export default function OnboardingFormClient({
   // --- FORM STAGE ---
 
   return (
-    <div className="animate-in fade-in duration-500 slide-in-from-bottom-2">
+    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
       {/* Header Form */}
-      <div className="mb-8 text-center">
+      <div className="mb-10 text-center">
         <Image
           src="/logo/logonbg.png"
           alt="TuEjecutiva.cl Logo"
-          width={160}
-          height={50}
-          className="mx-auto mb-6 h-auto w-32 opacity-80"
+          width={180}
+          height={60}
+          className="mx-auto mb-6 h-auto w-36 opacity-90"
         />
         <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Datos de Postulación</h1>
-        <p className="mt-2 text-slate-500">
-          Completa los campos a continuación.
+        <p className="mt-2 text-slate-500 text-lg">
+          Completa los campos para tu perfil profesional.
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-white shadow-xl shadow-slate-200/60 ring-1 ring-slate-900/5">
+      <div className="overflow-hidden rounded-2xl bg-white shadow-2xl shadow-slate-200/50 ring-1 ring-slate-900/5">
         {mode === "dev" ? (
           <div className="border-b border-amber-100 bg-amber-50 px-6 py-3 text-sm text-amber-800">
             <strong>Modo desarrollo:</strong> este formulario no consume token para pruebas.
@@ -376,8 +396,8 @@ export default function OnboardingFormClient({
                     value={draft.full_name}
                     onChange={(event) => updateField("full_name", event.target.value)}
                     className={`block w-full rounded-lg border px-3 py-2.5 text-slate-900 shadow-sm placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 transition-colors ${fieldErrors.full_name
-                        ? "border-rose-300 focus:border-rose-300 focus:ring-rose-200"
-                        : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-100"
+                      ? "border-rose-300 focus:border-rose-300 focus:ring-rose-200"
+                      : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-100"
                       }`}
                     placeholder="Tu nombre completo"
                   />
@@ -393,8 +413,8 @@ export default function OnboardingFormClient({
                     value={draft.email}
                     onChange={(event) => updateField("email", event.target.value)}
                     className={`block w-full rounded-lg border px-3 py-2.5 text-slate-900 shadow-sm placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 transition-colors ${fieldErrors.email
-                        ? "border-rose-300 focus:border-rose-300 focus:ring-rose-200"
-                        : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-100"
+                      ? "border-rose-300 focus:border-rose-300 focus:ring-rose-200"
+                      : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-100"
                       }`}
                     placeholder="tu@email.com"
                   />
@@ -411,8 +431,8 @@ export default function OnboardingFormClient({
                     onChange={(event) => updateField("phone", event.target.value)}
                     placeholder="9 1234 5678"
                     className={`block w-full rounded-lg border px-3 py-2.5 text-slate-900 shadow-sm placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 transition-colors ${fieldErrors.phone
-                        ? "border-rose-300 focus:border-rose-300 focus:ring-rose-200"
-                        : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-100"
+                      ? "border-rose-300 focus:border-rose-300 focus:ring-rose-200"
+                      : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-100"
                       }`}
                   />
                   {fieldErrors.phone && (
@@ -427,8 +447,8 @@ export default function OnboardingFormClient({
                     value={draft.company}
                     onChange={(event) => updateField("company", event.target.value)}
                     className={`block w-full rounded-lg border px-3 py-2.5 text-slate-900 shadow-sm placeholder:text-slate-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 transition-colors ${fieldErrors.company
-                        ? "border-rose-300 focus:border-rose-300 focus:ring-rose-200"
-                        : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-100"
+                      ? "border-rose-300 focus:border-rose-300 focus:ring-rose-200"
+                      : "border-slate-200 focus:border-emerald-500 focus:ring-emerald-100"
                       }`}
                     placeholder="Nombre de la empresa"
                   />

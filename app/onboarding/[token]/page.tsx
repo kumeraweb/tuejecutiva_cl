@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
 import OnboardingFormClient from "@/app/components/onboarding/OnboardingFormClient";
 import {
@@ -32,12 +33,12 @@ export default async function OnboardingTokenPage({ params }: PageProps) {
             El enlace de onboarding ya fue utilizado o ha caducado.
             Si necesitas continuar con tu postulación, solicita una nueva invitación.
           </p>
-          <a
+          <Link
             href="/"
             className="mt-8 inline-flex items-center justify-center rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100"
           >
             Volver al inicio
-          </a>
+          </Link>
         </div>
       </main>
     );
