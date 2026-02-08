@@ -7,7 +7,6 @@ interface ExecutiveCertificateProps {
 export default function ExecutiveCertificate({ verifiedDate }: ExecutiveCertificateProps) {
     return (
         <div className="relative overflow-hidden bg-white rounded-2xl p-6 sm:p-8 text-slate-900 shadow-sm border border-slate-200">
-            {/* Background Decor */}
             <div className="absolute top-0 right-0 -mr-8 -mt-8 opacity-[0.08] pointer-events-none">
                 <img src="/images/certification.png" alt="" className="w-64 h-64" />
             </div>
@@ -29,7 +28,7 @@ export default function ExecutiveCertificate({ verifiedDate }: ExecutiveCertific
                         Hemos validado manualmente su identidad, antecedentes comerciales y vínculo contractual con la compañía que representa.
                     </p>
                     <p className="mt-4 text-xs text-slate-500 font-mono">
-                        Verificado: {verifiedDate} • ID: {Math.random().toString(36).substr(2, 9).toUpperCase()}
+                        Verificado: {verifiedDate}
                     </p>
                 </div>
             </div>

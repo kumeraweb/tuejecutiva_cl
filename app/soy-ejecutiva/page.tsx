@@ -22,7 +22,6 @@ const benefits = [
 export default function SoyEjecutivaPage() {
     return (
         <div className="bg-white">
-            {/* Hero Section */}
             <div className="relative isolate overflow-hidden bg-slate-900 pb-16 pt-14 sm:pb-20">
                 <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
                     <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-emerald-800 to-indigo-800 opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
@@ -56,7 +55,6 @@ export default function SoyEjecutivaPage() {
                 </div>
             </div>
 
-            {/* Benefits Section */}
             <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8 lg:py-40">
                 <div className="mx-auto max-w-2xl text-center">
                     <h2 className="text-base font-semibold leading-7 text-emerald-600 uppercase tracking-wide">
@@ -89,7 +87,6 @@ export default function SoyEjecutivaPage() {
                 </div>
             </div>
 
-            {/* How it works */}
             <div className="bg-slate-50 py-24 sm:py-32">
                 <div className="mx-auto max-w-7xl px-6 lg:px-8">
                     <div className="mx-auto max-w-2xl lg:text-center">
@@ -108,7 +105,6 @@ export default function SoyEjecutivaPage() {
                                 <p className="mt-2 text-slate-600">Completa el formulario con tus datos profesionales básicos.</p>
                             </div>
                             <div className="relative">
-                                {/* Connector Line */}
                                 <div className="hidden lg:block absolute top-6 left-[-50%] right-[50%] h-0.5 bg-gray-200 z-0" aria-hidden="true" />
 
                                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-600 text-white font-bold text-xl mx-auto mb-4 relative z-10 shadow-lg ring-4 ring-white">2</div>
@@ -116,7 +112,6 @@ export default function SoyEjecutivaPage() {
                                 <p className="mt-2 text-slate-600">Validamos tu identidad y antecedentes para otorgarte el sello de confianza.</p>
                             </div>
                             <div className="relative">
-                                {/* Connector Line */}
                                 <div className="hidden lg:block absolute top-6 left-[-50%] right-[50%] h-0.5 bg-gray-200 z-0" aria-hidden="true" />
 
                                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-600 text-white font-bold text-xl mx-auto mb-4 relative z-10 shadow-lg ring-4 ring-white">3</div>
@@ -137,7 +132,6 @@ export default function SoyEjecutivaPage() {
                 </div>
             </div>
 
-            {/* CTA to Plans */}
             <div className="relative bg-indigo-900 py-16 sm:py-24">
                 <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
                     <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-indigo-500 to-purple-500 opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />

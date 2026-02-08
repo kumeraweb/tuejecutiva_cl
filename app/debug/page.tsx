@@ -13,6 +13,7 @@ export default async function DebugPage() {
     notFound();
   }
 
+  let payload: unknown;
   try {
     const [categories, regions, executives] = await Promise.all([
       getCategories(),
@@ -31,26 +32,21 @@ export default async function DebugPage() {
       executivesByCategoryEntries
     );
 
-    const payload = {
+    payload = {
       categories,
       regions,
       executives,
       executivesByCategory,
     };
-
-    return (
-      <main style={{ padding: 24 }}>
-        <h1>Debug Supabase</h1>
-        <pre>{JSON.stringify(payload, null, 2)}</pre>
-      </main>
-    );
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
-    return (
-      <main style={{ padding: 24 }}>
-        <h1>Debug Supabase</h1>
-        <pre>{JSON.stringify({ error: message }, null, 2)}</pre>
-      </main>
-    );
+    payload = { error: message };
   }
+
+  return (
+    <main style={{ padding: 24 }}>
+      <h1>Debug Supabase</h1>
+      <pre>{JSON.stringify(payload, null, 2)}</pre>
+    </main>
+  );
 }

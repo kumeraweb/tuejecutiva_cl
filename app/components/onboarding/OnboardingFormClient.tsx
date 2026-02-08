@@ -255,7 +255,6 @@ export default function OnboardingFormClient({
   if (stage === "welcome") {
     return (
       <div className="relative flex min-h-[80vh] flex-col items-center justify-center text-center overflow-hidden">
-        {/* Background Decorative Element */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.03] z-0 select-none">
           <Image
             src="/images/certification.png"
@@ -308,7 +307,6 @@ export default function OnboardingFormClient({
   if (stage === "success") {
     return (
       <div className="relative flex min-h-[70vh] flex-col items-center justify-center text-center overflow-hidden">
-        {/* Background Decorative Element */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.04] z-0 select-none">
           <Image
             src="/images/certification.png"
@@ -350,7 +348,6 @@ export default function OnboardingFormClient({
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
-      {/* Header Form */}
       <div className="mb-10 text-center">
         <Image
           src="/logo/logonbg.png"
@@ -386,7 +383,6 @@ export default function OnboardingFormClient({
           ) : null}
 
           <form className="space-y-8" onSubmit={handleSubmit}>
-            {/* Personal Info Group */}
             <div className="space-y-6">
               <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
@@ -505,7 +501,6 @@ export default function OnboardingFormClient({
 
             <hr className="border-slate-100" />
 
-            {/* Coverage Section */}
             <section>
               <h2 className="text-base font-semibold leading-7 text-slate-900 mb-3">Cobertura Geográfica</h2>
               <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
@@ -567,7 +562,6 @@ export default function OnboardingFormClient({
 
             <hr className="border-slate-100" />
 
-            {/* Terms Section */}
             <section className="space-y-4">
               <div>
                 <label className="flex items-start gap-3 cursor-pointer group">

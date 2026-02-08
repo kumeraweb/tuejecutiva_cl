@@ -79,7 +79,6 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
 
   return (
     <main className="bg-slate-50 flex-1 pb-24 sm:pb-32">
-      {/* Conversion Tracking */}
       {shouldTrackConversion && (
         <Script id="google-ads-conversion" strategy="afterInteractive">
           {`gtag('event', 'conversion', {
@@ -90,7 +89,6 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
         </Script>
       )}
 
-      {/* Breadcrumb */}
       <div className="bg-white border-b border-slate-100">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
           <nav className="flex" aria-label="Breadcrumb">
@@ -122,7 +120,6 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
       </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8 sm:space-y-12">
-        {/* 1. Hero Section */}
         <ExecutiveHero
           name={exec.name}
           specialty={safeSpecialty}
@@ -135,15 +132,12 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
           companyLogoUrl={exec.company_logo_url}
         />
 
-        {/* 2. Plans Section (Conditional) */}
         {plans.length > 0 && (
           <ExecutivePlansGrid plans={plans} whatsappLink={waLink} />
         )}
 
-        {/* 3. Certificate Section */}
         <ExecutiveCertificate verifiedDate={verifiedDateLabel} />
 
-        {/* 4. Executive Details & Bio */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-2 space-y-8">
             {safeDescription ? (
@@ -209,7 +203,6 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* 5. Company Info */}
         <ExecutiveCompanyInfo
           companyName={exec.company}
           companyLogoUrl={exec.company_logo_url}
@@ -218,7 +211,6 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
 
       </div>
 
-      {/* Mobile Sticky CTA */}
       <ExecutiveStickyCTA whatsappLink={waLink} name={exec.name} />
     </main>
   );

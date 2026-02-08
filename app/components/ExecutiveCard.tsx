@@ -95,13 +95,11 @@ export default function ExecutiveCard({ executive }: ExecutiveCardProps) {
         </div>
       ) : null}
 
-      {/* Main Card Link - Stretched to cover the whole card */}
       <a href={`/ejecutivas/${executive.slug}`} className="absolute inset-0 z-0">
         <span className="sr-only">Ver perfil de {executive.name}</span>
       </a>
 
       <div className="p-5 flex flex-col h-full relative pointer-events-none">
-        {/* Verified Watermark/Badge */}
         {executive.verified && (
           <div className="absolute top-4 right-4 z-0 opacity-10 pointer-events-none">
             <img src="/images/certification.png" alt="" className="w-24 h-24" />
@@ -137,7 +135,6 @@ export default function ExecutiveCard({ executive }: ExecutiveCardProps) {
           </div>
         </div>
 
-        {/* Company Branding Block - Separated to prevent layout shifting */}
         <div className="mb-4 relative z-10 bg-slate-50/80 rounded-xl p-3 border border-slate-100/80">
           <div className="flex items-center gap-3 mb-2">
             {executive.company_logo_url ? (

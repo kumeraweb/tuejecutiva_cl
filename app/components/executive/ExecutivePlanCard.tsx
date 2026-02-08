@@ -16,11 +16,9 @@ export default function ExecutivePlanCard({ plan, whatsappLink }: ExecutivePlanC
 
     return (
         <div className="flex flex-col h-full bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden relative group">
-            {/* Top Accent */}
             <div className="h-1.5 w-full bg-gradient-to-r from-emerald-400 to-emerald-500" />
 
             <div className="p-6 flex-1 flex flex-col">
-                {/* Header */}
                 <div className="mb-4">
                     <h3 className="text-lg font-bold text-slate-900 leading-tight mb-1">
                         {plan.name}
@@ -32,7 +30,6 @@ export default function ExecutivePlanCard({ plan, whatsappLink }: ExecutivePlanC
                     )}
                 </div>
 
-                {/* Price */}
                 <div className="mb-6 pb-6 border-b border-slate-100">
                     {plan.price_from ? (
                         <div className="flex items-baseline gap-1">
@@ -51,7 +48,6 @@ export default function ExecutivePlanCard({ plan, whatsappLink }: ExecutivePlanC
                     </p>
                 </div>
 
-                {/* Features */}
                 <div className="flex-1 mb-6">
                     <ul className="space-y-3">
                         {features.slice(0, 5).map((feature, idx) => (
@@ -68,7 +64,6 @@ export default function ExecutivePlanCard({ plan, whatsappLink }: ExecutivePlanC
                     )}
                 </div>
 
-                {/* CTA */}
                 <a
                     href={`${whatsappLink}&text=Hola,%20me%20interesa%20cotizar%20el%20plan%20*${encodeURIComponent(plan.name)}*`}
                     target="_blank"

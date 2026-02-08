@@ -35,11 +35,6 @@ export default function RegionFilter({
     [coverageAllChecked, selected]
   );
 
-  const getSelectedRegions = useCallback(
-    () => selected,
-    [selected]
-  );
-
   const updateFilterStatus = useCallback(
     (isCoverageAll: boolean, selectedCount: number) => {
       const filterStatus = document.getElementById("filter-status");

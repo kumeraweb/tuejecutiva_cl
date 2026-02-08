@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BadgeCheck, UserCheck, Star } from "lucide-react";
+import { UserCheck, Star } from "lucide-react";
 import LeadForm from "../components/LeadForm";
 
 export default function PostularPage() {
@@ -48,7 +48,7 @@ export default function PostularPage() {
                   <h3 className="font-bold text-slate-900">Leads Calificados</h3>
                   <p className="text-slate-600 text-sm">
                     Recibe contactos de personas que realmente están buscando
-                    contratar, no solo "curiosos".
+                    contratar, no solo &quot;curiosos&quot;.
                   </p>
                 </div>
               </li>
