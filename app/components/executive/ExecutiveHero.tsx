@@ -12,6 +12,7 @@ interface ExecutiveHeroProps {
     companyName: string | null;
     companyLogoUrl: string | null;
     showNonEmergencyNotice: boolean;
+    hasPlans: boolean;
     className?: string;
 }
 
@@ -26,6 +27,7 @@ export default function ExecutiveHero({
     companyName,
     companyLogoUrl,
     showNonEmergencyNotice,
+    hasPlans,
     className = "",
 }: ExecutiveHeroProps) {
     return (
@@ -72,6 +74,12 @@ export default function ExecutiveHero({
                                 ) : null}
                             </div>
                         ) : null}
+
+                        <p className="mt-3 text-sm font-semibold text-slate-800">
+                            {companyName
+                                ? `Contratación de planes en ${companyName}`
+                                : "Contratación de planes con ejecutiva verificada"}
+                        </p>
 
                         <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-left">
                             <p className="text-sm font-semibold text-slate-800">
@@ -121,6 +129,14 @@ export default function ExecutiveHero({
                             <MessageCircle className="w-5 h-5" />
                             Cotizar con {name.split(" ")[0]}
                         </TrackedWhatsappLink>
+                        {hasPlans ? (
+                            <a
+                                href="#planes-disponibles"
+                                className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-semibold text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors w-full sm:w-auto"
+                            >
+                                Ver planes disponibles
+                            </a>
+                        ) : null}
                     </div>
 
                     {showNonEmergencyNotice ? (

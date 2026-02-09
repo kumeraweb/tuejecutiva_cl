@@ -143,10 +143,13 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
           companyName={exec.company}
           companyLogoUrl={exec.company_logo_url}
           showNonEmergencyNotice={showNonEmergencyNotice}
+          hasPlans={plans.length > 0}
         />
 
         {plans.length > 0 && (
-          <ExecutivePlansGrid plans={plans} whatsappLink={waLink} />
+          <section id="planes-disponibles" className="scroll-mt-24">
+            <ExecutivePlansGrid plans={plans} whatsappLink={waLink} />
+          </section>
         )}
 
         <ExecutiveCertificate verifiedDate={verifiedDateLabel} />
