@@ -226,7 +226,7 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
 
       </div>
 
-      <ExecutiveStickyCTA whatsappLink={waLink} name={exec.name} />
+      <ExecutiveStickyCTA whatsappLink={waLink} name={exec.name} hasPlans={plans.length > 0} />
     </main>
   );
 }

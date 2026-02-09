@@ -81,13 +81,10 @@ export default function ExecutiveHero({
                                 : "Contratación de planes con ejecutiva verificada"}
                         </p>
 
-                        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-left">
-                            <p className="text-sm font-semibold text-slate-800">
-                                Plataforma independiente de verificación y contacto
-                            </p>
-                            <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                                TuEjecutiva.cl no vende planes ni representa a la empresa.
-                                La contratación final se realiza directamente con la ejecutiva y su empresa.
+                        <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-left">
+                            <p className="text-xs text-slate-700 leading-relaxed">
+                                Plataforma independiente. No vende planes ni representa a la empresa.
+                                La contratación final es directa con la ejecutiva y su empresa.
                             </p>
                         </div>
 
