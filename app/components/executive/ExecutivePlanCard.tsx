@@ -1,5 +1,6 @@
 import { Check, ArrowRight } from "lucide-react";
 import type { ExecutivePlanRecord } from "@/lib/queries";
+import TrackedWhatsappLink from "@/app/components/TrackedWhatsappLink";
 
 interface ExecutivePlanCardProps {
     plan: ExecutivePlanRecord;
@@ -64,15 +65,14 @@ export default function ExecutivePlanCard({ plan, whatsappLink }: ExecutivePlanC
                     )}
                 </div>
 
-                <a
+                <TrackedWhatsappLink
                     href={`${whatsappLink}&text=Hola,%20me%20interesa%20cotizar%20el%20plan%20*${encodeURIComponent(plan.name)}*`}
                     target="_blank"
-                    rel="noopener noreferrer"
                     className="mt-auto w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors group-hover:bg-emerald-600 group-hover:text-white"
                 >
                     Cotizar este plan
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </a>
+                </TrackedWhatsappLink>
             </div>
         </div>
     );

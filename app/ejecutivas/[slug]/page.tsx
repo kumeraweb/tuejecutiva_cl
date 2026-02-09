@@ -21,6 +21,7 @@ import ExecutivePlansGrid from "@/app/components/executive/ExecutivePlansGrid";
 import ExecutiveCertificate from "@/app/components/executive/ExecutiveCertificate";
 import ExecutiveCompanyInfo from "@/app/components/executive/ExecutiveCompanyInfo";
 import ExecutiveStickyCTA from "@/app/components/executive/ExecutiveStickyCTA";
+import TrackedWhatsappLink from "@/app/components/TrackedWhatsappLink";
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +32,7 @@ interface PageProps {
 export default async function ExecutiveDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const safeSlug = decodeURIComponent(slug).trim();
-  const shouldTrackConversion = safeSlug === "maria-ines-mora";
+  const shouldTrackPageVisitConversion = safeSlug === "maria-ines-mora";
 
   const executive = await getExecutiveBySlug(safeSlug);
   if (!executive || !executive.verified) {
@@ -90,8 +91,8 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
 
   return (
     <main className="bg-slate-50 flex-1 pb-24 sm:pb-32">
-      {shouldTrackConversion && (
-        <Script id="google-ads-conversion" strategy="afterInteractive">
+      {shouldTrackPageVisitConversion && (
+        <Script id="google-ads-page-visit-conversion" strategy="afterInteractive">
           {`gtag('event', 'conversion', {
             'send_to': 'AW-17932575934/tvp2CJzQ__IbEL7J9eZC',
             'value': 1.0,
@@ -199,14 +200,13 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
                 <p className="text-sm text-slate-500">
                   ¿Tienes dudas? Cotiza directamente sin compromiso.
                 </p>
-                <a
+                <TrackedWhatsappLink
                   href={waLink}
                   target="_blank"
-                  rel="noopener noreferrer"
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all shadow-sm hover:translate-y-px"
                 >
                   Contactar por WhatsApp
-                </a>
+                </TrackedWhatsappLink>
                 <p className="text-[10px] text-center text-slate-400">
                   Respuesta promedio: Menos de 1 hora
                 </p>

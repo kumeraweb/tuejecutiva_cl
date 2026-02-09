@@ -1,4 +1,5 @@
 import { BadgeCheck, MessageCircle, Briefcase, Building2 } from "lucide-react";
+import TrackedWhatsappLink from "@/app/components/TrackedWhatsappLink";
 
 interface ExecutiveHeroProps {
     name: string;
@@ -112,15 +113,14 @@ export default function ExecutiveHero({
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                        <a
+                        <TrackedWhatsappLink
                             href={whatsappLink}
                             target="_blank"
-                            rel="noopener noreferrer"
                             className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 w-full sm:w-auto"
                         >
                             <MessageCircle className="w-5 h-5" />
                             Cotizar con {name.split(" ")[0]}
-                        </a>
+                        </TrackedWhatsappLink>
                     </div>
 
                     {showNonEmergencyNotice ? (
