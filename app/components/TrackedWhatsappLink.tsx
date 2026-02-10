@@ -6,16 +6,7 @@ const GOOGLE_ADS_SEND_TO = 'AW-17932575934/4A10CL_B6vUbEL7J9eZC'
 
 declare global {
   interface Window {
-    gtag?: (
-      command: 'event',
-      eventName: 'conversion',
-      params: {
-        send_to: string
-        value: number
-        currency: string
-        event_callback: () => void
-      }
-    ) => void
+    gtag?: (...args: unknown[]) => void
   }
 }
 
