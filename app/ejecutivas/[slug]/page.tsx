@@ -254,7 +254,6 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
 
       <ExecutiveStickyCTA
         phoneLink={telLink}
-        phoneDisplay={phoneDisplay}
         phoneConversionSendTo={callConversionSendTo}
         whatsappLink={waLink}
         hasPlans={plans.length > 0}
