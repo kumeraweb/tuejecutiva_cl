@@ -93,8 +93,11 @@ export default function ExecutiveHero({
 
                         <p className="mt-3 text-sm font-semibold text-slate-800">
                             {companyName
-                                ? `Contratación de planes en ${companyName}`
-                                : "Contratación de planes con ejecutiva verificada"}
+                                ? `Ejecutiva verificada que trabaja en ${companyName}.`
+                                : "Ejecutiva verificada para contratación directa de planes."}
+                        </p>
+                        <p className="mt-1 text-sm text-slate-600">
+                            Contacta por WhatsApp o teléfono con respaldo de verificación de identidad.
                         </p>
 
                         <div className="mt-4 flex flex-wrap items-center justify-center sm:justify-start gap-2">

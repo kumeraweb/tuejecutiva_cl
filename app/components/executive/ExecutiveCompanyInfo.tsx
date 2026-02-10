@@ -39,10 +39,10 @@ export default function ExecutiveCompanyInfo({
                             </h4>
                         ) : null}
                         <p className="text-sm text-slate-600 max-w-md mt-0.5">
-                            La ejecutiva gestiona planes de esta compañía.
+                            Ejecutiva verificada que trabaja en esta compañía.
                         </p>
                         <p className="mt-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 leading-relaxed">
-                            TuEjecutiva.cl es una plataforma independiente y no representa a la empresa.
+                            Contratación directa por WhatsApp o teléfono. TuEjecutiva.cl es una plataforma independiente y no representa a la empresa.
                         </p>
                     </div>
                 </div>
