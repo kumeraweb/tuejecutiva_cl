@@ -31,6 +31,21 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+function formatPhoneForDisplay(phone: string) {
+  const trimmed = phone.trim();
+  if (!trimmed) return "";
+  if (!trimmed.startsWith("+56")) return trimmed;
+
+  const digits = trimmed.slice(1).replace(/\D/g, "");
+  if (digits.length < 11) return trimmed;
+
+  const country = `+${digits.slice(0, 2)}`;
+  const mobile = digits.slice(2, 3);
+  const part1 = digits.slice(3, 7);
+  const part2 = digits.slice(7, 11);
+  return `${country} ${mobile} ${part1} ${part2}`;
+}
+
 export default async function ExecutiveDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const safeSlug = decodeURIComponent(slug).trim();
@@ -88,6 +103,8 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
     ? `https://wa.me/${safePhone}?text=${encodeURIComponent(safeWhatsapp)}`
     : "#";
   const telLink = safePhone ? `tel:${safePhone}` : "#";
+  const phoneDisplay = formatPhoneForDisplay(safePhone);
+  const callLabel = phoneDisplay ? `Llamar al ${phoneDisplay}` : "Llamar ahora";
   const safeDescription = exec.description?.trim() || null;
   const safeSpecialty = exec.specialty?.trim() || null;
   const experienceLabel = exec.experience_years !== null && exec.experience_years !== undefined
@@ -136,12 +153,14 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
           photoUrl={safePhotoUrl}
           verified={exec.verified}
           phoneLink={telLink}
+          phoneDisplay={phoneDisplay}
           phoneConversionSendTo={callConversionSendTo}
           whatsappLink={waLink}
           companyName={exec.company}
           companyLogoUrl={exec.company_logo_url}
           showNonEmergencyNotice={showNonEmergencyNotice}
           hasPlans={plans.length > 0}
+          showFeaturedBadge={exec.plan === "oro"}
         />
 
         {plans.length > 0 && (
@@ -204,10 +223,10 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
                 <TrackedCallLink
                   href={telLink}
                   conversionSendTo={callConversionSendTo}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-white bg-slate-900 rounded-xl hover:bg-slate-800 transition-all shadow-sm hover:translate-y-px"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-white bg-slate-900 rounded-xl hover:bg-slate-800 transition-all shadow-sm hover:translate-y-px text-center leading-tight whitespace-normal"
                 >
                   <Phone className="w-4 h-4" />
-                  Llamar a {exec.name.split(" ")[0]}
+                  {callLabel}
                 </TrackedCallLink>
                 <TrackedWhatsappLink
                   href={waLink}
@@ -235,6 +254,7 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
 
       <ExecutiveStickyCTA
         phoneLink={telLink}
+        phoneDisplay={phoneDisplay}
         phoneConversionSendTo={callConversionSendTo}
         whatsappLink={waLink}
         hasPlans={plans.length > 0}

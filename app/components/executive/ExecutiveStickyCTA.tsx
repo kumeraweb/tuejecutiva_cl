@@ -4,12 +4,15 @@ import TrackedCallLink from "@/app/components/TrackedCallLink";
 
 interface ExecutiveStickyCTAProps {
     phoneLink: string;
+    phoneDisplay: string;
     phoneConversionSendTo?: string;
     whatsappLink: string;
     hasPlans: boolean;
 }
 
-export default function ExecutiveStickyCTA({ phoneLink, phoneConversionSendTo, whatsappLink, hasPlans }: ExecutiveStickyCTAProps) {
+export default function ExecutiveStickyCTA({ phoneLink, phoneDisplay, phoneConversionSendTo, whatsappLink, hasPlans }: ExecutiveStickyCTAProps) {
+    const callLabel = phoneDisplay ? `Llamar al ${phoneDisplay}` : "Llamar ahora";
+
     return (
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 md:hidden">
             <div className="flex flex-col gap-3">
@@ -17,10 +20,10 @@ export default function ExecutiveStickyCTA({ phoneLink, phoneConversionSendTo, w
                     <TrackedCallLink
                         href={phoneLink}
                         conversionSendTo={phoneConversionSendTo}
-                        className="flex items-center justify-center gap-2 w-full bg-slate-900 text-white font-bold py-3.5 px-4 rounded-xl shadow-sm active:scale-[0.98] transition-transform"
+                        className="flex items-center justify-center gap-2 w-full bg-slate-900 text-white font-bold py-3.5 px-4 rounded-xl shadow-sm active:scale-[0.98] transition-transform text-center leading-tight whitespace-normal"
                     >
                         <Phone className="w-5 h-5" />
-                        Llamar ahora
+                        {callLabel}
                     </TrackedCallLink>
                 ) : null}
                 <TrackedWhatsappLink

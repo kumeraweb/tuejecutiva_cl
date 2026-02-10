@@ -10,12 +10,14 @@ interface ExecutiveHeroProps {
     photoUrl: string;
     verified: boolean;
     phoneLink: string;
+    phoneDisplay: string;
     phoneConversionSendTo?: string;
     whatsappLink: string;
     companyName: string | null;
     companyLogoUrl: string | null;
     showNonEmergencyNotice: boolean;
     hasPlans: boolean;
+    showFeaturedBadge: boolean;
     className?: string;
 }
 
@@ -27,16 +29,25 @@ export default function ExecutiveHero({
     photoUrl,
     verified,
     phoneLink,
+    phoneDisplay,
     phoneConversionSendTo,
     whatsappLink,
     companyName,
     companyLogoUrl,
     showNonEmergencyNotice,
     hasPlans,
+    showFeaturedBadge,
     className = "",
 }: ExecutiveHeroProps) {
+    const callLabel = phoneDisplay ? `Llamar al ${phoneDisplay}` : "Llamar ahora";
+
     return (
-        <div className={`bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sm:p-8 ${className}`}>
+        <div className={`relative bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sm:p-8 ${className}`}>
+            {showFeaturedBadge ? (
+                <div className="absolute right-0 top-24 z-20 translate-x-1/2 rotate-90 rounded-t-md bg-amber-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-800 shadow-sm">
+                    Ejecutiva destacada
+                </div>
+            ) : null}
             <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left">
                 <div className="relative shrink-0">
                     <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-slate-50 shadow-md">
@@ -118,15 +129,17 @@ export default function ExecutiveHero({
                     <div className="flex flex-col sm:flex-row gap-3 pt-2">
                         {phoneLink !== "#" ? (
                             <TrackedCallLink
+                                id="contacto-llamada"
                                 href={phoneLink}
                                 conversionSendTo={phoneConversionSendTo}
-                                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-white bg-slate-900 rounded-xl hover:bg-slate-800 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 w-full sm:w-auto"
+                                className="inline-flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-bold text-white bg-slate-900 rounded-xl hover:bg-slate-800 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 w-full sm:w-auto text-center leading-tight whitespace-normal"
                             >
                                 <Phone className="w-5 h-5" />
-                                Llamar a {name.split(" ")[0]}
+                                {callLabel}
                             </TrackedCallLink>
                         ) : null}
                         <TrackedWhatsappLink
+                            id="contacto-whatsapp"
                             href={whatsappLink}
                             target="_blank"
                             className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors w-full sm:w-auto"
