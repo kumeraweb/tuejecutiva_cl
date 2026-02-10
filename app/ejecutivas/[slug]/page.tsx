@@ -1,11 +1,12 @@
 import Link from "next/link";
-import Script from "next/script";
 import {
   Home,
   ChevronRight,
   User,
   MapPin,
-  Briefcase
+  Briefcase,
+  Phone,
+  MessageCircle,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import {
@@ -22,6 +23,7 @@ import ExecutiveCertificate from "@/app/components/executive/ExecutiveCertificat
 import ExecutiveCompanyInfo from "@/app/components/executive/ExecutiveCompanyInfo";
 import ExecutiveStickyCTA from "@/app/components/executive/ExecutiveStickyCTA";
 import TrackedWhatsappLink from "@/app/components/TrackedWhatsappLink";
+import TrackedCallLink from "@/app/components/TrackedCallLink";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +34,10 @@ interface PageProps {
 export default async function ExecutiveDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const safeSlug = decodeURIComponent(slug).trim();
-  const shouldTrackPageVisitConversion = safeSlug === "maria-ines-mora";
+  const callConversionSendTo =
+    safeSlug === "maria-ines-mora"
+      ? "AW-17932575934/2s7tCIKl9_UbEL7J9eZC"
+      : undefined;
 
   const executive = await getExecutiveBySlug(safeSlug);
   if (!executive || !executive.verified) {
@@ -82,6 +87,7 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
   const waLink = safePhone
     ? `https://wa.me/${safePhone}?text=${encodeURIComponent(safeWhatsapp)}`
     : "#";
+  const telLink = safePhone ? `tel:${safePhone}` : "#";
   const safeDescription = exec.description?.trim() || null;
   const safeSpecialty = exec.specialty?.trim() || null;
   const experienceLabel = exec.experience_years !== null && exec.experience_years !== undefined
@@ -91,16 +97,6 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
 
   return (
     <main className="bg-slate-50 flex-1 pb-24 sm:pb-32">
-      {shouldTrackPageVisitConversion && (
-        <Script id="google-ads-page-visit-conversion" strategy="afterInteractive">
-          {`gtag('event', 'conversion', {
-            'send_to': 'AW-17932575934/tvp2CJzQ__IbEL7J9eZC',
-            'value': 1.0,
-            'currency': 'CLP'
-          });`}
-        </Script>
-      )}
-
       <div className="bg-white border-b border-slate-100">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
           <nav className="flex" aria-label="Breadcrumb">
@@ -139,6 +135,8 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
           experienceYears={exec.experience_years ?? null}
           photoUrl={safePhotoUrl}
           verified={exec.verified}
+          phoneLink={telLink}
+          phoneConversionSendTo={callConversionSendTo}
           whatsappLink={waLink}
           companyName={exec.company}
           companyLogoUrl={exec.company_logo_url}
@@ -201,14 +199,23 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
               </h3>
               <div className="space-y-4">
                 <p className="text-sm text-slate-500">
-                  ¿Tienes dudas? Cotiza directamente sin compromiso.
+                  Elige cómo prefieres contactar.
                 </p>
+                <TrackedCallLink
+                  href={telLink}
+                  conversionSendTo={callConversionSendTo}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-white bg-slate-900 rounded-xl hover:bg-slate-800 transition-all shadow-sm hover:translate-y-px"
+                >
+                  <Phone className="w-4 h-4" />
+                  Llamar a {exec.name.split(" ")[0]}
+                </TrackedCallLink>
                 <TrackedWhatsappLink
                   href={waLink}
                   target="_blank"
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all shadow-sm hover:translate-y-px"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors"
                 >
-                  Contactar por WhatsApp
+                  <MessageCircle className="w-4 h-4" />
+                  WhatsApp a {exec.name.split(" ")[0]}
                 </TrackedWhatsappLink>
                 <p className="text-[10px] text-center text-slate-400">
                   Respuesta promedio: Menos de 1 hora
@@ -226,7 +233,12 @@ export default async function ExecutiveDetailPage({ params }: PageProps) {
 
       </div>
 
-      <ExecutiveStickyCTA whatsappLink={waLink} name={exec.name} hasPlans={plans.length > 0} />
+      <ExecutiveStickyCTA
+        phoneLink={telLink}
+        phoneConversionSendTo={callConversionSendTo}
+        whatsappLink={waLink}
+        hasPlans={plans.length > 0}
+      />
     </main>
   );
 }

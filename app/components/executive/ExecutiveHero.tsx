@@ -1,5 +1,6 @@
-import { BadgeCheck, MessageCircle, Briefcase, Building2 } from "lucide-react";
+import { BadgeCheck, MessageCircle, Briefcase, Building2, Phone } from "lucide-react";
 import TrackedWhatsappLink from "@/app/components/TrackedWhatsappLink";
+import TrackedCallLink from "@/app/components/TrackedCallLink";
 
 interface ExecutiveHeroProps {
     name: string;
@@ -8,6 +9,8 @@ interface ExecutiveHeroProps {
     experienceYears: number | null;
     photoUrl: string;
     verified: boolean;
+    phoneLink: string;
+    phoneConversionSendTo?: string;
     whatsappLink: string;
     companyName: string | null;
     companyLogoUrl: string | null;
@@ -23,6 +26,8 @@ export default function ExecutiveHero({
     experienceYears,
     photoUrl,
     verified,
+    phoneLink,
+    phoneConversionSendTo,
     whatsappLink,
     companyName,
     companyLogoUrl,
@@ -56,7 +61,7 @@ export default function ExecutiveHero({
 
                         {companyName || companyLogoUrl ? (
                             <div className="mt-4 flex items-center justify-center sm:justify-start gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                                <div className="h-16 w-16 sm:h-20 sm:w-20 p-2 sm:p-2.5 flex items-center justify-center rounded-lg bg-white border border-slate-200 shrink-0 shadow-sm">
+                                <div className="h-[4.5rem] w-[4.5rem] sm:h-[5.5rem] sm:w-[5.5rem] p-2 sm:p-2.5 flex items-center justify-center rounded-lg bg-white border border-slate-200 shrink-0 shadow-sm">
                                     {companyLogoUrl ? (
                                         <img
                                             src={companyLogoUrl}
@@ -80,13 +85,6 @@ export default function ExecutiveHero({
                                 ? `Contratación de planes en ${companyName}`
                                 : "Contratación de planes con ejecutiva verificada"}
                         </p>
-
-                        <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-left">
-                            <p className="text-xs text-slate-700 leading-relaxed">
-                                Plataforma independiente. No vende planes ni representa a la empresa.
-                                La contratación final es directa con la ejecutiva y su empresa.
-                            </p>
-                        </div>
 
                         <div className="mt-4 flex flex-wrap items-center justify-center sm:justify-start gap-2">
                             {specialty ? (
@@ -118,13 +116,23 @@ export default function ExecutiveHero({
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                        {phoneLink !== "#" ? (
+                            <TrackedCallLink
+                                href={phoneLink}
+                                conversionSendTo={phoneConversionSendTo}
+                                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-white bg-slate-900 rounded-xl hover:bg-slate-800 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 w-full sm:w-auto"
+                            >
+                                <Phone className="w-5 h-5" />
+                                Llamar a {name.split(" ")[0]}
+                            </TrackedCallLink>
+                        ) : null}
                         <TrackedWhatsappLink
                             href={whatsappLink}
                             target="_blank"
-                            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 w-full sm:w-auto"
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors w-full sm:w-auto"
                         >
                             <MessageCircle className="w-5 h-5" />
-                            Cotizar con {name.split(" ")[0]}
+                            WhatsApp a {name.split(" ")[0]}
                         </TrackedWhatsappLink>
                         {hasPlans ? (
                             <a
@@ -134,6 +142,16 @@ export default function ExecutiveHero({
                                 Ver planes disponibles
                             </a>
                         ) : null}
+                    </div>
+                    <p className="text-xs text-slate-500">
+                        Contacto directo · Sin call center · Respuesta rápida
+                    </p>
+
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-left">
+                        <p className="text-xs text-slate-700 leading-relaxed">
+                            Plataforma independiente. No vende planes ni representa a la empresa.
+                            La contratación final es directa con la ejecutiva y su empresa.
+                        </p>
                     </div>
 
                     {showNonEmergencyNotice ? (

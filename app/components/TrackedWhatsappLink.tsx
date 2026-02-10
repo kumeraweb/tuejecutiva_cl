@@ -1,9 +1,8 @@
 'use client'
-//testing as
 
 import type { AnchorHTMLAttributes, MouseEvent } from 'react'
 
-const GOOGLE_ADS_SEND_TO = 'AW-17932575934/JjsKCKOauvUbEL7J9eZC'
+const GOOGLE_ADS_SEND_TO = 'AW-17932575934/4A10CL_B6vUbEL7J9eZC'
 
 declare global {
   interface Window {
