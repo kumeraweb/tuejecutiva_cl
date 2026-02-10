@@ -44,12 +44,15 @@ export async function POST(request: Request) {
 
   const formData = await request.formData();
   const nombre = getString(formData.get("nombre"));
+  const telefono = getString(formData.get("telefono"));
   const email = getString(formData.get("email"));
-  const mensaje = getString(formData.get("mensaje"));
+  const nombreFinal = nombre || "No informado";
+  const telefonoFinal = telefono || "No informado";
+  const emailFinal = email || "No informado";
 
-  if (!nombre || !email || !mensaje) {
+  if (!telefono && !email) {
     return NextResponse.json(
-      { error: "Faltan campos obligatorios." },
+      { error: "Debes enviar teléfono o correo." },
       { status: 400 }
     );
   }
@@ -63,27 +66,29 @@ export async function POST(request: Request) {
       from,
       to: toInternal,
       subject: "Nueva postulación desde TuEjecutiva.cl",
-      text: `Nombre: ${nombre}\nEmail: ${email}\n\nMensaje:\n${mensaje}`,
+      text: `Nombre: ${nombreFinal}\nTeléfono: ${telefonoFinal}\nEmail: ${emailFinal}`,
     });
 
-    await resend.emails.send({
-      from,
-      to: email,
-      subject: "Recibimos tu postulación ✔️",
-      html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #0f172a; background-color: #f8fafc; padding: 24px;">
-          <div style="max-width: 560px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
-            <div style="display: inline-block; padding: 10px 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 16px;">
-              <img src="https://tuejecutiva.cl/logo/logonbg.png" alt="TuEjecutiva.cl" style="height: 36px; display: block;" />
+    if (email) {
+      await resend.emails.send({
+        from,
+        to: email,
+        subject: "Recibimos tu postulación ✔️",
+        html: `
+          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #0f172a; background-color: #f8fafc; padding: 24px;">
+            <div style="max-width: 560px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
+              <div style="display: inline-block; padding: 10px 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 16px;">
+                <img src="https://tuejecutiva.cl/logo/logonbg.png" alt="TuEjecutiva.cl" style="height: 36px; display: block;" />
+              </div>
+              <h2 style="margin: 0 0 12px; font-size: 20px;">Gracias por postular a TuEjecutiva.cl</h2>
+              <p>Hola ${nombreFinal},</p>
+              <p>Recibimos tu postulación correctamente. Nuestro equipo la revisará y te contactará si necesitamos más información.</p>
+              <p style="margin-top: 16px;">Equipo TuEjecutiva.cl</p>
             </div>
-            <h2 style="margin: 0 0 12px; font-size: 20px;">Gracias por postular a TuEjecutiva.cl</h2>
-            <p>Hola ${nombre},</p>
-            <p>Recibimos tu postulación correctamente. Nuestro equipo la revisará y te contactará si necesitamos más información.</p>
-            <p style="margin-top: 16px;">Equipo TuEjecutiva.cl</p>
           </div>
-        </div>
-      `,
-    });
+        `,
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

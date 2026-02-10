@@ -3,16 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-interface CategoryOption {
-  id: string;
-  name: string;
+function normalizePhone(phone: string) {
+  return phone.replace(/\D/g, "");
 }
 
-interface LeadFormClientProps {
-  categories: CategoryOption[];
-}
-
-export default function LeadFormClient({ categories }: LeadFormClientProps) {
+export default function LeadFormClient() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -26,19 +21,28 @@ export default function LeadFormClient({ categories }: LeadFormClientProps) {
     const form = event.currentTarget;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
-    const mensaje = [
-      `Nombre: ${data.name ?? ""}`,
-      `Teléfono: ${data.phone ?? ""}`,
-      `Rubro: ${data.category ?? ""}`,
-      `Correo: ${data.email ?? ""}`,
-      `Mensaje: ${data.message ?? ""}`,
-    ].join("\n");
+    const name = String(data.name ?? "").trim();
+    const phoneRaw = String(data.phone ?? "").trim();
+    const phone = normalizePhone(phoneRaw);
+    const email = String(data.email ?? "").trim();
+
+    if (!phone && !email) {
+      setIsSubmitting(false);
+      setError("Ingresa teléfono o correo para poder contactarte.");
+      return;
+    }
+
+    if (phone && (phone.length < 8 || phone.length > 9)) {
+      setIsSubmitting(false);
+      setError("Ingresa un número válido de 8 o 9 dígitos.");
+      return;
+    }
 
     try {
       const payload = new FormData();
-      payload.set("nombre", String(data.name ?? ""));
-      payload.set("email", String(data.email ?? ""));
-      payload.set("mensaje", mensaje);
+      payload.set("nombre", name);
+      payload.set("telefono", phone ? `+56${phone}` : "");
+      payload.set("email", email);
 
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -53,8 +57,8 @@ export default function LeadFormClient({ categories }: LeadFormClientProps) {
       setIsSubmitted(true);
       form.reset();
       setTimeout(() => {
-        router.push("/");
-      }, 4000);
+        router.push("/postular/gracias");
+      }, 800);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado.");
     } finally {
@@ -67,7 +71,7 @@ export default function LeadFormClient({ categories }: LeadFormClientProps) {
       <div className="mb-8">
         <h3 className="text-xl font-bold text-slate-900">Inicia tu postulación</h3>
         <p className="text-sm text-slate-500 mt-2">
-          Completa tus datos y te contactaremos para verificar tu perfil.
+          Déjanos tus datos y te contactamos. Solo necesitas teléfono o correo.
         </p>
       </div>
 
@@ -84,7 +88,6 @@ export default function LeadFormClient({ categories }: LeadFormClientProps) {
               type="text"
               name="name"
               id="name"
-              required
               placeholder="Ej. María Pérez"
               className="block w-full rounded-lg border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
             />
@@ -98,16 +101,22 @@ export default function LeadFormClient({ categories }: LeadFormClientProps) {
           >
             Teléfono (WhatsApp)
           </label>
-          <div className="mt-2">
+          <div className="mt-2 flex items-center rounded-lg ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-emerald-600">
+            <span className="px-3 text-sm text-slate-700 border-r border-gray-200">
+              +56
+            </span>
             <input
               type="tel"
               name="phone"
               id="phone"
-              required
-              placeholder="+56 9 1234 5678"
-              className="block w-full rounded-lg border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
+              inputMode="numeric"
+              autoComplete="tel-national"
+              pattern="[0-9]{8,9}"
+              placeholder="931478612"
+              className="block w-full rounded-r-lg border-0 px-3.5 py-2 text-slate-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
             />
           </div>
+          <p className="mt-1 text-xs text-slate-500">Sin espacios ni símbolos.</p>
         </div>
 
         <div>
@@ -122,51 +131,7 @@ export default function LeadFormClient({ categories }: LeadFormClientProps) {
               type="email"
               name="email"
               id="email"
-              required
               placeholder="contacto@ejemplo.com"
-              className="block w-full rounded-lg border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="category"
-            className="block text-sm font-semibold leading-6 text-slate-900"
-          >
-            Rubro principal
-          </label>
-          <div className="mt-2">
-            <select
-              id="category"
-              name="category"
-              className="block w-full rounded-lg border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
-              defaultValue=""
-            >
-              <option value="">Selecciona tu rubro...</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.name}>
-                  {category.name}
-                </option>
-              ))}
-              <option value="otro">Otro / No listado</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="message"
-            className="block text-sm font-semibold leading-6 text-slate-900"
-          >
-            Cuéntanos a qué te dedicas
-          </label>
-          <div className="mt-2">
-            <textarea
-              id="message"
-              name="message"
-              rows={3}
-              placeholder="Breve descripción de tus servicios..."
               className="block w-full rounded-lg border-0 px-3.5 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
             />
           </div>
