@@ -5,17 +5,17 @@ const benefits = [
     {
         name: "Validación de Identidad",
         description:
-            "Genera confianza inmediata. Verificamos tus antecedentes para que los clientes sepan que eres una profesional real y confiable.",
+            "Verificamos tu identidad para que el cliente sepa que eres una ejecutiva real y confiable.",
     },
     {
         name: "Exposición Premium",
         description:
-            "Tu perfil destacado en un entorno diseñado para resaltar tu profesionalismo, lejos del ruido de las redes sociales convencionales.",
+            "Destaca tu perfil para aparecer primero y recibir más contactos en tu rubro.",
     },
     {
         name: "Sin Intermediarios",
         description:
-            "Los clientes te contactan directamente a tu WhatsApp o teléfono. Tú controlas tu negocio y tus tarifas.",
+            "Te contactan directo por WhatsApp o teléfono. Tú controlas tu proceso y tu comisión.",
     },
 ];
 
@@ -30,11 +30,10 @@ export default function SoyEjecutivaPage() {
                 <div className="mx-auto max-w-7xl px-6 lg:px-8">
                     <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 text-center">
                         <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl font-display">
-                            Eleva tu estatus profesional
+                            Más contactos. Menos curiosos.
                         </h1>
                         <p className="mt-6 text-lg leading-8 text-gray-300">
-                            Únete a la plataforma exclusiva para ejecutivas que valoran su reputación.
-                            Valida tu trayectoria, genera confianza y conecta con clientes que buscan excelencia.
+                            Crea tu perfil verificado en TuEjecutiva.cl y recibe contactos directos de clientes que buscan contratar. Sin intermediarios.
                         </p>
                         <div className="mt-10 flex items-center justify-center gap-x-6">
                             <Link
@@ -47,6 +46,9 @@ export default function SoyEjecutivaPage() {
                                 Ver Planes Premium <span aria-hidden="true" className="group-hover:translate-x-1 transition-transform inline-block">→</span>
                             </Link>
                         </div>
+                        <p className="mt-4 text-sm text-gray-400">
+                            Empieza gratis. Sin compromiso.
+                        </p>
                     </div>
                 </div>
 
@@ -61,10 +63,10 @@ export default function SoyEjecutivaPage() {
                         Por qué unirse
                     </h2>
                     <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                        Tu reputación es tu mayor activo
+                        La confianza es lo que te hace vender
                     </p>
                     <p className="mt-6 text-lg leading-8 text-slate-600">
-                        En un mercado saturado, la confianza lo es todo. TuEjecutiva.cl te ofrece el respaldo que necesitas para diferenciarte.
+                        En un mercado saturado, un perfil verificado reduce la desconfianza y mejora la calidad de los contactos que recibes.
                     </p>
                 </div>
 
@@ -102,7 +104,7 @@ export default function SoyEjecutivaPage() {
                             <div className="relative">
                                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-600 text-white font-bold text-xl mx-auto mb-4 relative z-10 shadow-lg ring-4 ring-white">1</div>
                                 <h3 className="text-lg font-semibold text-slate-900">Postula</h3>
-                                <p className="mt-2 text-slate-600">Completa el formulario con tus datos profesionales básicos.</p>
+                                <p className="mt-2 text-slate-600">Completa tu perfil en 2 minutos con tus datos profesionales básicos.</p>
                             </div>
                             <div className="relative">
                                 <div className="hidden lg:block absolute top-6 left-[-50%] right-[50%] h-0.5 bg-gray-200 z-0" aria-hidden="true" />
@@ -116,7 +118,7 @@ export default function SoyEjecutivaPage() {
 
                                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-600 text-white font-bold text-xl mx-auto mb-4 relative z-10 shadow-lg ring-4 ring-white">3</div>
                                 <h3 className="text-lg font-semibold text-slate-900">Publicamos</h3>
-                                <p className="mt-2 text-slate-600">Tu perfil aparece listado y listo para recibir contactos de clientes.</p>
+                                <p className="mt-2 text-slate-600">Tu perfil queda listado para que te contacten clientes reales.</p>
                             </div>
                         </div>
                     </div>

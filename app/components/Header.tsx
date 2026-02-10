@@ -8,7 +8,7 @@ import { Menu, X } from 'lucide-react'
 const links = [
   { href: '/servicios', label: 'Servicios' },
   { href: '/#como-funciona', label: '¿Cómo funciona?' },
-  { href: '/postular', label: 'Postular' }
+  { href: '/soy-ejecutiva', label: 'Soy Ejecutiva' }
 ]
 
 export default function Header() {

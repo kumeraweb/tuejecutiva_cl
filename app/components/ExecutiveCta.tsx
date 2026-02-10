@@ -31,22 +31,22 @@ export default function ExecutiveCta() {
           <div className="grid grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-2 lg:items-center">
             <div>
               <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl text-pretty">
-                ¿Eres una Ejecutiva de Excelencia?
+                ¿Eres ejecutiva y vives de comisiones?
                 <span className="block text-emerald-400 mt-2">
-                  Únete a la élite.
+                  Recibe contactos directos.
                 </span>
               </h2>
               <p className="mt-6 text-lg leading-8 text-gray-300">
-                Deja de competir por precio y empieza a ganar por confianza. En
-                TuEjecutiva.cl validamos tu identidad y trayectoria para que los
-                clientes te elijan a ti.
+                Deja de competir solo por precio. En TuEjecutiva.cl verificamos tu
+                identidad y trayectoria para que clientes reales te elijan con
+                confianza.
               </p>
               <div className="mt-8 flex gap-x-4 items-center">
                 <a
                   href="/soy-ejecutiva"
                   className="rounded-full bg-emerald-500 px-6 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-all transform hover:scale-105"
                 >
-                  Saber más
+                  Postular Gratis
                 </a>
                 <a
                   href="/planes-ejecutivas"
@@ -55,6 +55,9 @@ export default function ExecutiveCta() {
                   Ver Planes Premium <span aria-hidden="true">→</span>
                 </a>
               </div>
+              <p className="mt-4 text-sm text-gray-400">
+                Empieza gratis. Tú decides si destacas tu perfil después.
+              </p>
             </div>
             <div className="relative lg:ml-auto">
               <div className="relative rounded-xl bg-white p-8 shadow-2xl ring-1 ring-gray-900/10 backdrop-blur-sm">
@@ -70,7 +73,7 @@ export default function ExecutiveCta() {
                     <h3 className="text-lg font-bold text-slate-900">
                       Perfil Verificado
                     </h3>
-                    <p className="text-sm text-slate-500">Tu sello de calidad</p>
+                    <p className="text-sm text-slate-500">Más confianza, más cierres</p>
                   </div>
                 </div>
                 <ul className="space-y-4 text-slate-600 text-sm">
@@ -86,7 +89,7 @@ export default function ExecutiveCta() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Más confianza = Más ventas
+                    Más confianza = más cierres
                   </li>
                   <li className="flex gap-2 items-center">
                     <svg
@@ -100,7 +103,7 @@ export default function ExecutiveCta() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Sin intermediarios
+                    Contactos directos
                   </li>
                   <li className="flex gap-2 items-center">
                     <svg
@@ -114,7 +117,7 @@ export default function ExecutiveCta() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Clientes reales
+                    Menos curiosos
                   </li>
                 </ul>
               </div>

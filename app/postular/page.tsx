@@ -8,11 +8,11 @@ export default function PostularPage() {
       <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-2xl text-center mb-16">
           <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
-            Postula al Portal
+            Crea tu perfil y empieza a recibir contactos
           </h1>
           <p className="mt-6 text-lg leading-8 text-slate-600">
-            Únete a la red de ejecutivas verificadas más grande de Chile.
-            Aumenta tu visibilidad y genera confianza en tus futuros clientes.
+            Únete al directorio de ejecutivas verificadas. Más confianza, más
+            cierres y contacto directo por WhatsApp o teléfono.
           </p>
         </div>
 
@@ -59,8 +59,8 @@ export default function PostularPage() {
                 <div className="ml-4">
                   <h3 className="font-bold text-slate-900">Perfil Profesional</h3>
                   <p className="text-slate-600 text-sm">
-                    Tú eliges cómo presentarte: destaca tu experiencia, tu
-                    especialidad y tu propuesta de valor.
+                    Presenta tu experiencia, rubro y propuesta de valor en un
+                    perfil claro y verificable.
                   </p>
                 </div>
               </li>
@@ -77,7 +77,7 @@ export default function PostularPage() {
                     1. Contacto
                   </h3>
                   <p className="text-sm text-slate-600 mt-1">
-                    Nos contactas a través del formulario simple de esta página.
+                    Nos dejas tus datos en el formulario.
                   </p>
                 </div>
 
@@ -87,48 +87,27 @@ export default function PostularPage() {
                     2. Evaluación
                   </h3>
                   <p className="text-sm text-slate-600 mt-1">
-                    Evaluamos tu perfil y nos cuentas a qué te dedicas.
+                    Revisamos tu rubro y tu perfil.
                   </p>
                 </div>
 
                 <div className="relative">
                   <div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-emerald-500 ring-4 ring-white" />
                   <h3 className="text-base font-semibold text-slate-900">
-                    3. Propuesta
+                    3. Verificación
                   </h3>
                   <p className="text-sm text-slate-600 mt-1">
-                    Te mostramos los planes disponibles y eliges el mejor para
-                    ti.
+                    Validamos identidad para el sello de confianza.
                   </p>
                 </div>
 
                 <div className="relative">
                   <div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-emerald-500 ring-4 ring-white" />
                   <h3 className="text-base font-semibold text-slate-900">
-                    4. Verificación
+                    4. Publicación/Activación
                   </h3>
                   <p className="text-sm text-slate-600 mt-1">
-                    Nos envías tu documentación para validar tu identidad.
-                  </p>
-                </div>
-
-                <div className="relative">
-                  <div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-emerald-500 ring-4 ring-white" />
-                  <h3 className="text-base font-semibold text-slate-900">
-                    5. Creación
-                  </h3>
-                  <p className="text-sm text-slate-600 mt-1">
-                    Te enviamos un enlace único para que crees tu perfil.
-                  </p>
-                </div>
-
-                <div className="relative">
-                  <div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-emerald-500 ring-4 ring-white" />
-                  <h3 className="text-base font-semibold text-slate-900">
-                    6. ¡Publicada!
-                  </h3>
-                  <p className="text-sm text-slate-600 mt-1">
-                    Aprobamos tu perfil y ya estás visible para recibir clientes.
+                    Tu perfil queda listo para recibir contactos.
                   </p>
                 </div>
               </div>

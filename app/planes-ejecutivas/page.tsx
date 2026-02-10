@@ -7,7 +7,7 @@ const tiers = [
         id: "free",
         href: "/postular?plan=free",
         priceMonthly: "$0",
-        description: "Para comenzar tu presencia profesional en la plataforma.",
+        description: "Empieza con tu perfil verificado y recibe contactos directos.",
         features: [
             "Perfil listado en el directorio",
             "Sello de verificación (tras validación)",
@@ -25,8 +25,8 @@ const tiers = [
         description: "Destaca entre tus colegas de rubro.",
         features: [
             "Todo lo incluido en el plan Gratuito",
-            "Destacada como ejecutiva en tu rubro",
-            "Mayor visibilidad en búsquedas por categoría",
+            "Perfil destacado en tu rubro",
+            "Más visibilidad en búsquedas por categoría",
         ],
         featured: false,
         cta: "Solicitar Plan Bronce",
@@ -37,11 +37,11 @@ const tiers = [
         href: "/postular?plan=silver",
         priceMonthly: "$49.000",
         suffix: "+ IVA / mes",
-        description: "Amplía tu alcance más allá de tu sector.",
+        description: "Aumenta tu exposición para recibir más contactos.",
         features: [
             "Todo lo incluido en el plan Bronce",
             "Aparición destacada en diversas páginas del sitio",
-            "Inclusión en campañas dirigidas a tu rubro",
+            "Inclusión en campañas para tu rubro",
             "Prioridad en resultados de búsqueda",
         ],
         featured: false,
@@ -53,7 +53,7 @@ const tiers = [
         href: "/postular?plan=gold",
         priceMonthly: "$120.000",
         suffix: "+ IVA / mes",
-        description: "La máxima exposición para tu marca personal.",
+        description: "Máxima exposición para atraer clientes de tu rubro.",
         features: [
             "Todo lo incluido en el plan Plata",
             "Campañas publicitarias exclusivas dirigidas a tu perfil",
@@ -78,10 +78,10 @@ export default function PlanesEjecutivasPage() {
                         Planes y Precios
                     </h2>
                     <p className="mt-2 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl font-display">
-                        Invierte en tu Marca Personal
+                        Destaca tu perfil y recibe más contactos
                     </p>
                     <p className="mt-6 text-lg leading-8 text-slate-600">
-                        Elige el nivel de exposición que deseas. Desde una presencia verificada gratuita hasta campañas personalizadas para atraer clientes de alto valor.
+                        Empieza gratis con perfil verificado. Si quieres más exposición, elige un plan para aparecer destacado y atraer clientes de tu rubro.
                     </p>
                 </div>
 
