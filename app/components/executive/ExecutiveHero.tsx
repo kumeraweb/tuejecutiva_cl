@@ -163,13 +163,6 @@ export default function ExecutiveHero({
                         Contacto directo · Sin call center · Respuesta rápida
                     </p>
 
-                    <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-left">
-                        <p className="text-xs text-slate-700 leading-relaxed">
-                            Plataforma independiente. No vende planes ni representa a la empresa.
-                            La contratación final es directa con la ejecutiva y su empresa.
-                        </p>
-                    </div>
-
                     {showNonEmergencyNotice ? (
                         <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-left">
                             <p className="text-sm font-medium text-amber-900">

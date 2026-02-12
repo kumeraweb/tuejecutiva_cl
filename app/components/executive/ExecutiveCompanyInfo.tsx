@@ -42,7 +42,7 @@ export default function ExecutiveCompanyInfo({
                             Ejecutiva verificada que trabaja en esta compañía.
                         </p>
                         <p className="mt-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 leading-relaxed">
-                            Contratación directa por WhatsApp o teléfono. TuEjecutiva.cl es una plataforma independiente y no representa a la empresa.
+                            Contratación directa por WhatsApp o teléfono.
                         </p>
                     </div>
                 </div>

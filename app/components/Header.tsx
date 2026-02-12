@@ -43,9 +43,6 @@ export default function Header() {
               height={40}
               priority
             />
-            <span className="hidden sm:inline-block bg-slate-100 text-slate-500 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full tracking-wider border border-slate-200">
-              Plataforma Independiente
-            </span>
           </Link>
         </div>
 
